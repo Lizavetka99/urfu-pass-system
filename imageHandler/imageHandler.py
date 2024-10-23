@@ -1,4 +1,6 @@
 import numpy as np
+import cv2
+import os
 
 
 def check_for_min_quality(image):
@@ -81,4 +83,5 @@ def cut_quality(image, rectangle):
 
 def save_image(image):
     """Сохраняет изображение в папку"""
-    pass
+    output_path = r'E:\Workspace\test_output'
+    cv2.imwrite(output_path, image, [cv2.IMWRITE_JPEG_QUALITY, 100])
