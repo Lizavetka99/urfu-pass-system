@@ -42,12 +42,6 @@ def cut_quality(image):
     если изображение слишком большое"""
     pass
 
-
-def rename_image(image_name):
-    """Возвращает название изображения, соответствующее критериям"""
-    pass
-
-
 def save_image(image):
     """Сохраняет изображение в папку"""
     pass
