@@ -1,4 +1,5 @@
 def check_for_min_quality(image):
+    """Возвращает True, если изображение подходит по качеству"""
     height, width = image.shape[:2]
     return height >= 480 and width >= 360  # Данные размеры соответствуют >= 300 dpi для фото 3х4.
 
