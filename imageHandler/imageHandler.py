@@ -1,3 +1,6 @@
+import cv2
+import numpy as np
+
 def check_for_min_quality(image):
     """Возвращает True, если изображение подходит по качеству"""
     pass
@@ -10,7 +13,21 @@ def remove_transparency(image):
 
 def identify_face(image):
     """Возвращает True, если одно лицо на изображении"""
-    pass
+    face_count = 0
+    prototxt_path = 'weights/deploy.prototxt.txt'
+    model_path = 'weights\\res10_300x300_ssd_iter_140000.caffemodel'
+
+    model = cv2.dnn.readNetFromCaffe(prototxt_path, model_path)
+    blob = cv2.dnn.blobFromImage(image, 1.0, (300, 300), (104.0, 177.0, 123.0))
+
+    model.setInput(blob)
+    output = np.squeeze(model.forward())
+
+    for i in range(0, output.shape[0]):
+        confidence = output[i, 2]
+        if confidence > 0.8:
+            face_count += 1
+    return face_count == 1
 
 
 def turn_face(image):
