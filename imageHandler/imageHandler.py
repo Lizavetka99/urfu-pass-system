@@ -3,9 +3,23 @@ def check_for_min_quality(image):
     pass
 
 
-def remove_transparency(image):
+def remove_transparency(image, input_path):
     """Возвращает изображение без прозрачности"""
-    pass
+    if image.shape[2] == 4:
+        print(f"Изображение {input_path} имеет альфа-канал (прозрачность).")
+
+        # Создаем маску для прозрачных пикселей
+        alpha_channel = image[:, :, 3]
+        mask = alpha_channel == 0
+
+        # Заменяем прозрачные пиксели на белый цвет
+        image[mask] = [255, 255, 255, 255]
+
+        # Удаляем альфа-канал
+        image = image[:, :, :3]
+
+    else:
+        print(f"Изображение {input_path} не имеет альфа-канала (прозрачности).")
 
 
 def identify_face(image):
