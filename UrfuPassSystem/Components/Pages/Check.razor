@@ -1,0 +1,102 @@
+﻿@using Microsoft.EntityFrameworkCore
+@using UrfuPassSystem.ArchiveHandler
+@using UrfuPassSystem.Data
+@using UrfuPassSystem.ImageHandler
+
+@page "/check"
+@rendermode InteractiveServer
+@inject ILogger<Check> Logger
+@inject ApplicationDbContext Database
+
+<PageTitle>Проверка фотографий</PageTitle>
+
+<h1>Проверка фотографий</h1>
+ 
+@if (image == null)
+{
+    <p><em>Все фотографии проверены.</em></p>
+}
+else
+{
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <img src="@PreviewRaw" />
+            </div>
+            <div class="col">
+                <img src="@PreviewProcessed" />
+            </div>
+        </div>
+        <hr/>
+        <div class="row">
+            <div class="col">
+                <button type="button" class="btn btn-primary" @onclick="Success">Ок</button>
+            </div>
+            <div class="col">
+                <button type="button" class="btn btn-primary" @onclick="NotSuccess">Не ок</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    public Image? image;
+
+    public string? PreviewRaw { get; set; }
+    public string? PreviewProcessed { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Update();
+    }
+
+    private async Task Success(MouseEventArgs e)
+    {
+        var check = await CreateCheck(image!, true);
+        await Update();
+    }
+
+    private async Task NotSuccess(MouseEventArgs e)
+    {
+        var check = await CreateCheck(image!, false);
+        await Update();
+    }
+
+    private async Task<ImageCheck> CreateCheck(Image image, bool isSuccess)
+    {
+        var check = new ImageCheck
+        {
+            ImageId = image.Id,
+            CheckTime = DateTime.UtcNow,
+            IsSuccess = isSuccess
+        };
+        await Database.ImageChecks.AddAsync(check);
+        await Database.SaveChangesAsync();
+        return check;
+    }
+
+    private async Task Update()
+    {
+        image = await Database.Images
+            .Include(i => i.Check)
+            .Where(i => i.Check == null).FirstOrDefaultAsync();
+        if (image == null)
+            return;
+
+        if (image.RawFilePath == null)
+            PreviewRaw = null;
+        else
+        {
+            var buffer = await File.ReadAllBytesAsync(image.RawFilePath);
+            PreviewRaw = $"data:image/jpeg;base64,{Convert.ToBase64String(buffer)}";
+        }
+
+        if (image.ProcessedFilePath == null)
+            PreviewProcessed = null;
+        else
+        {
+            var buffer = await File.ReadAllBytesAsync(image.ProcessedFilePath);
+            PreviewProcessed = $"data:image/jpeg;base64,{Convert.ToBase64String(buffer)}";
+        }
+    }
+}

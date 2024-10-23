@@ -1,0 +1,108 @@
+﻿@using UrfuPassSystem.ArchiveHandler
+@using UrfuPassSystem.ImageHandler
+
+@page "/upload"
+@rendermode InteractiveServer
+@inject ILogger<Upload> Logger
+@inject IArchiveHandler ArchiveHandler
+@inject IImageHandler ImageHandler
+
+<PageTitle>Загрузить</PageTitle>
+
+<h1>Загрузить архив / изображение</h1>
+
+<div style="margin-bottom: 20px; display: flex;">
+    <div>Выберите файл:</div>
+    <InputFile OnChange="FileUploaded" />
+</div>
+
+<h2>Выбранный файл:</h2>
+<div>
+    <img src="@Preview" />
+    <div>Название: @FileName</div>
+    <div>Размер: @FileSize.ToString("n0") (байт)</div>
+    <div>Тип: @FileType</div>
+</div>
+
+<button type="button" class="btn btn-primary" @onclick="StartProcess">Обработать</button>
+
+<script lang="js">
+    window.previewImage = (inputElem, imgElem) => {
+        const url = URL.createObjectURL(inputElem.files[0]);
+        imgElem.addEventListener('load', () => URL.revokeObjectURL(url), { once: true });
+        imgElem.src = url;
+    }
+</script>
+
+@code {
+    public string FileName { get; set; } = "";
+    public long FileSize { get; set; }
+    public string FileType { get; set; } = "";
+    public string? FilePath{ get; set; }
+
+    public string? Preview { get; set; }
+
+    const int MAX_FILESIZE = 10 * 1024 * 1024; // 10 MB
+
+    public async Task FileUploaded(InputFileChangeEventArgs e)
+    {
+        if (FilePath != null)
+            File.Delete(FilePath);
+
+        var file = e.File;
+        if (file is null)
+            return;
+
+        FileSize = file.Size;
+        FileType = file.ContentType;
+        FileName = file.Name;
+
+        var buffer = new byte[FileSize];
+        await file.OpenReadStream(MAX_FILESIZE).ReadAsync(buffer);
+
+        if (FileType.StartsWith("image"))
+            Preview = $"data:{FileType};base64,{Convert.ToBase64String(buffer)}";
+        else
+            Preview = string.Empty;
+
+        var path = Path.GetFullPath(Path.Combine("images/temp", FileName));
+
+        FilePath = path;
+
+        await using var destinationStream = new FileStream(path, FileMode.Create);
+        await file.OpenReadStream(MAX_FILESIZE).CopyToAsync(destinationStream);
+    }
+
+    private async Task StartProcess(MouseEventArgs e)
+    {
+        if (FilePath == null)
+            return;
+        var files = default(string[]);
+        var path = default(string);
+        if (FileType.Contains("zip"))
+        {
+            var randomFileName = Path.GetRandomFileName();
+            path = Path.GetFullPath(Path.Combine("images/temp", randomFileName));
+            await ArchiveHandler.ExtractArchive(FilePath, path);
+            files = Directory.GetFiles(path);
+            foreach (var file in files)
+            {
+                await SaveImage(file);
+                File.Delete(file);
+            }
+            Directory.Delete(path);
+        }
+        else
+            await SaveImage(FilePath);
+        File.Delete(FilePath);
+        FilePath = null;
+        FileName = "";
+        FileSize = 0;
+        FileType = "";
+    }
+
+    private async Task SaveImage(string imagePath)
+    {
+        await ImageHandler.SaveImage(imagePath);
+    }
+}

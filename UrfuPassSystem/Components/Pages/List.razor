@@ -1,0 +1,53 @@
+﻿@using Microsoft.EntityFrameworkCore
+@using UrfuPassSystem.Data
+
+@page "/list"
+@attribute [StreamRendering]
+@inject ApplicationDbContext Database
+
+<PageTitle>Изображения</PageTitle>
+
+<h1>Изображения</h1>
+
+@if (images == null)
+{
+    <p><em>Загрузка...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Время отправки</th>
+                <th>Фамилия</th>
+                <th>Имя</th>
+                <th>Отчество</th>
+                <th>Статус проверки</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var image in images)
+            {
+                <tr>
+                    <td>@image.SendTime.ToString()</td>
+                    <td>@image.Student?.LastName</td>
+                    <td>@image.Student?.FirstName</td>
+                    <td>@image.Student?.Patronymic</td>
+                    <td>@image.Check?.IsSuccess</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Image[]? images;
+
+    protected override async Task OnInitializedAsync()
+    {
+        images = await Database.Images
+            .Include(i => i.Student)
+            .Include(i => i.Check)
+            .ToArrayAsync();
+    }
+}
