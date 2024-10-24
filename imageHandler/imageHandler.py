@@ -3,11 +3,12 @@ import cv2
 import os
 
 
+
+
 def check_for_min_quality(image):
     """Возвращает True, если изображение подходит по качеству"""
     height, width = image.shape[:2]
     return height >= 480 and width >= 360  # Данные размеры соответствуют >= 300 dpi для фото 3х4.
-
 
 def remove_transparency(image, input_path):
     """Возвращает изображение без прозрачности"""
@@ -64,7 +65,6 @@ def turn_face(image):
     rotated_image = image
     for i in range(0, output.shape[0]):
         confidence = output[i, 2]
-        print(confidence)
         if confidence > 0.8:
             box = output[i, 3:7] * np.array([w, h, w, h])
             start_x, start_y, end_x, end_y = box.astype(int)
@@ -91,11 +91,31 @@ def check_for_blur(image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     return int(cv2.Laplacian(gray, cv2.CV_64F).var()) >= minimumQuality
 
+def get_rectangle(image):
+    prototxt_path = 'weights/deploy.prototxt.txt'
+    model_path = 'weights\\res10_300x300_ssd_iter_140000.caffemodel'
 
-def cut_quality(image, rectangle):
+    model = cv2.dnn.readNetFromCaffe(prototxt_path, model_path)
+    h, w = image.shape[:2]
+    blob = cv2.dnn.blobFromImage(image, 1.0, (300, 300), (104.0, 177.0, 123.0))
+
+    model.setInput(blob)
+    output = np.squeeze(model.forward())
+    start_x, start_y, end_x, end_y = 0, 0, 0, 0
+    rotated_image = image
+    for i in range(0, output.shape[0]):
+        confidence = output[i, 2]
+        if confidence > 0.8:
+            box = output[i, 3:7] * np.array([w, h, w, h])
+            start_x, start_y, end_x, end_y = box.astype(int)
+    return start_x, start_y, end_x, end_y
+
+def cut_quality(image):
     """Возвращает изображение, урезанное по качеству,
     если изображение слишком большое"""
-    x, y, x_b, y_b = rectangle
+
+    x, y, x_b, y_b = get_rectangle(image)
+
 
     image_height, image_width = image.shape[:2]
 
@@ -117,19 +137,53 @@ def cut_quality(image, rectangle):
     min_height = int(np.sqrt(min_area * image_width / image_height))
     max_height = int(np.sqrt(max_area * image_width / image_height))
 
-    # Определяем координаты для обрезки
-    left = max(0, x - (max_width - w) // 2)
-    upper = max(0, y - (max_height - h) // 2)
-    right = min(image_width, x_b + (max_width - w) // 2)
-    lower = min(image_height, y_b + (max_height - h) // 2)
-    print(left, right, upper, lower)
+
+
+    new_x = x - (w*0.3)
+    new_end_x = x_b + (w*0.3)
+    new_y = y - (h*0.2)
+    new_end_y = y_b + (h*0.2)
+
+    n_w = new_end_x - new_x
+    n_h = n_w // 4 * 3
     # Обрезка изображения
-    cropped_image = image[upper:lower, left:right]
+    cropped_image = image[ int(new_y) : int(new_end_y), int(new_x):int(new_end_x)]
 
     return cropped_image
 
 
-def save_image(image):
+def save_image(image, filename):
     """Сохраняет изображение в папку"""
-    output_path = r'E:\Workspace\test_output'
+    output_path = r"C:\Users\shute\Desktop\urfu-pass-system\imageHandler\test_output"
+    output_path = os.path.join(output_path, filename)
     cv2.imwrite(output_path, image, [cv2.IMWRITE_JPEG_QUALITY, 100])
+
+
+input_folder = r"C:\Users\shute\Desktop\urfu-pass-system\imageHandler\Tests"
+
+for filename in os.listdir(input_folder):
+    # Полный путь к исходному файлу
+    input_path = os.path.join(input_folder, filename)
+
+    # Проверяем, что файл существует и является файлом
+    if os.path.isfile(input_path):
+        # Читаем изображение с поддержкой альфа-канала
+        img = cv2.imread(input_path, cv2.IMREAD_UNCHANGED)
+        # Проверяем, что изображение загружено корректно
+        if img is not None:
+            if not check_for_min_quality(img):
+                print("Плохое качество фото", filename)
+
+            img = remove_transparency(img, input_path)
+            if not identify_face(img):
+                print("Должно быть ровно 1 лицо на фото", filename)
+                continue
+            img = turn_face(img)
+            if not check_for_blur(img):
+                print("Изображение слишком размыто", filename)
+                continue
+            img = cut_quality(img)
+            if not check_for_min_quality(img):
+                print("Плохое качество фото", filename)
+
+            save_image(img, filename)
