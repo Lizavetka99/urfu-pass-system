@@ -64,7 +64,13 @@ def turn_face(image):
 
 def check_for_blur(image):
     """Возвращает False, если изображение слишком размыто"""
-    pass
+    minimumQuality = 100
+
+    #  Еще нужно тестить на множестве фотографий, желательно на квадратах лиц.
+    #  Минимальное значение "чёткости" пока условно.
+
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    return int(cv2.Laplacian(gray, cv2.CV_64F).var()) >= minimumQuality
 
 
 def cut_quality(image):
