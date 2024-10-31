@@ -38,7 +38,7 @@ public class ImageHandler(ApplicationDbContext database,
             SendTime = DateTime.UtcNow,
             OriginalFileName = originalName,
             RawFilePath = rawPath,
-            ProcessedFilePath = processedPath,
+            ProcessedFilePath = isSuccess ? processedPath : null,
             AutoIsSuccess = isSuccess,
             AutoResult = processorResult
         };
