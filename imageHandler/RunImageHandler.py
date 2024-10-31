@@ -9,5 +9,6 @@ def run():
         print(message)
     else:
         messages = image_handler.edit_images_folder(input_filename, output_filename)
-        print(messages)
+        for message in messages.items():
+            print(f'{message[0]}\t{message[1]}')
 run()
