@@ -5,22 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bd83d553-e4aa-4cbb-ab89-fed3afd6988b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imageHandler/TestPhotoMethods.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/urfu-pass-system.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/urfu-pass-system.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/imageHandler/Humans_faces_dataset/1 (1).jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/imageHandler/Humans_faces_dataset/1 (1).jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/imageHandler/Humans_faces_dataset/1 (1).png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/imageHandler/Humans_faces_dataset/1 (174).jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/imageHandler/quality_checker.py" beforeDir="false" afterPath="$PROJECT_DIR$/imageHandler/quality_checker.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imageHandler/TestPhotoMethods.py" beforeDir="false" afterPath="$PROJECT_DIR$/imageHandler/TestPhotoMethods.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imageHandler/transparency_remover.py" beforeDir="false" afterPath="$PROJECT_DIR$/imageHandler/transparency_remover.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -46,7 +45,28 @@
   }
 }]]></component>
   <component name="RunManager" selected="Python tests.Python tests in TestPhotoMethods.py">
-    <configuration name="Python tests for TestPhotoMethods.TestCheckOtherThings" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+    <configuration name="JustTest" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="urfu-pass-system" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/imageHandler" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/imageHandler/JustTest.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests for TestPhotoMethods.TestCheckForMinQuality" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="urfu-pass-system" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -56,11 +76,11 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;TestPhotoMethods.TestCheckOtherThings&quot;" />
+      <option name="_new_target" value="&quot;TestPhotoMethods.TestCheckForMinQuality&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests for TestPhotoMethods.TestPhotoMethods" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests for TestPhotoMethods.TestCheckRemoveTransparency" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="urfu-pass-system" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -70,11 +90,11 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;TestPhotoMethods.TestPhotoMethods&quot;" />
+      <option name="_new_target" value="&quot;TestPhotoMethods.TestCheckRemoveTransparency&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests for TestPhotoMethods.TestPhotoMethods.test_check_for_min_quality_false" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests for TestPhotoMethods.TestCheckRemoveTransparency.test_remove_transparency_no_channels" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="urfu-pass-system" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -84,21 +104,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;TestPhotoMethods.TestPhotoMethods.test_check_for_min_quality_false&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
-      <method v="2" />
-    </configuration>
-    <configuration name="Python tests for TestPhotoMethods.TestPhotoMethods.test_check_for_min_quality_true" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
-      <module name="urfu-pass-system" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/imageHandler" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;TestPhotoMethods.TestPhotoMethods.test_check_for_min_quality_true&quot;" />
+      <option name="_new_target" value="&quot;TestPhotoMethods.TestCheckRemoveTransparency.test_remove_transparency_no_channels&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
@@ -119,10 +125,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python tests.Python tests in TestPhotoMethods.py" />
-        <item itemvalue="Python tests.Python tests for TestPhotoMethods.TestCheckOtherThings" />
-        <item itemvalue="Python tests.Python tests for TestPhotoMethods.TestPhotoMethods.test_check_for_min_quality_true" />
-        <item itemvalue="Python tests.Python tests for TestPhotoMethods.TestPhotoMethods" />
-        <item itemvalue="Python tests.Python tests for TestPhotoMethods.TestPhotoMethods.test_check_for_min_quality_false" />
+        <item itemvalue="Python tests.Python tests for TestPhotoMethods.TestCheckRemoveTransparency.test_remove_transparency_no_channels" />
+        <item itemvalue="Python tests.Python tests for TestPhotoMethods.TestCheckRemoveTransparency" />
+        <item itemvalue="Python.JustTest" />
+        <item itemvalue="Python tests.Python tests for TestPhotoMethods.TestCheckForMinQuality" />
       </list>
     </recent_temporary>
   </component>

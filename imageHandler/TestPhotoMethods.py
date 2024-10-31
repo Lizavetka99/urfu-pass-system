@@ -4,54 +4,86 @@ import face_recognizer, image_cutter, quality_checker, transparency_remover, \
 import os
 import cv2
 
+
+def readImages(directory):
+    images = []
+    for filename in os.listdir(directory):
+        input_path = os.path.join(directory, filename)
+        images.append((cv2.imread(input_path, cv2.IMREAD_UNCHANGED), filename))
+    return images
+
+
 class TestCheckForMinQuality(unittest.TestCase):
+
+    def setUp(self):
+        self.qChecker = quality_checker.QualityChecker()
+
     def test_check_for_min_quality_true(self):
         """Проверка, что данные фотографии подходят по размеру."""
-        checker = quality_checker.QualityChecker()
-        directoryValid = "TestPhotos/TestCheckMinQuality/Valid"
-        for filename in os.listdir(directoryValid):
-            input_path = os.path.join(directoryValid, filename)
-            image = cv2.imread(input_path, cv2.IMREAD_UNCHANGED)
-            self.assertTrue(checker.check_for_min_quality(image), "Error in " + filename)
+        for image, filename in readImages("TestPhotos/TestCheckMinQuality/Valid"):
+            self.assertTrue(self.qChecker.check_for_min_quality(image), "Error in " + filename)
 
     def test_check_for_min_quality_false(self):
         """Проверка, что данные фотографии не подходят по размеру."""
-        checker = quality_checker.QualityChecker()
-        directoryValid = "TestPhotos/TestCheckMinQuality/InValid"
-        for filename in os.listdir(directoryValid):
-            input_path = os.path.join(directoryValid, filename)
-            image = cv2.imread(input_path, cv2.IMREAD_UNCHANGED)
-            self.assertFalse(checker.check_for_min_quality(image), "Error in " + filename)
+        for image, filename in readImages("TestPhotos/TestCheckMinQuality/InValid"):
+            self.assertFalse(self.qChecker.check_for_min_quality(image), "Error in " + filename)
 
 
 class TestCheckRemoveTransparency(unittest.TestCase):
-    def test_remove_transparency(self):
-        self.assertFalse(False)
+
+    def setUp(self):
+        self.tRemover = transparency_remover.TransparencyRemover()
+
+    def test_remove_transparency_no_alpha(self):
+        for image, filename in readImages("TestPhotos/TestRemoveTransparency/NoAlpha"):
+            new_image = self.tRemover.remove_transparancy(image)
+            self.assertEqual(new_image.shape[2], 3, "Error in " + filename)
+
+    def test_remove_transparency_with_alpha(self):
+        for image, filename in readImages("TestPhotos/TestRemoveTransparency/WithAlpha"):
+            new_image = self.tRemover.remove_transparancy(image)
+            self.assertEqual(new_image.shape[2], 3, "Error in " + filename)
+
+    def test_remove_transparency_no_channels(self):
+        for image, filename in readImages("TestPhotos/TestRemoveTransparency/NoChannels"):
+            new_image = self.tRemover.remove_transparancy(image)
+            self.assertEqual(new_image.shape[2], 3, "Error in " + filename)
 
 
 class TestIdentifyFace(unittest.TestCase):
+
+    def setUp(self):
+        self.fRecognizer = face_recognizer.FaceRecognizer()
+
     def test_identify_face(self):
-        self.assertFalse(False)
+        pass
 
 
 class TestTurnFace(unittest.TestCase):
+
+    def setUp(self):
+        self.iRotator = image_rotator.ImageRotator()
+
     def test_turn_face(self):
-        self.assertFalse(False)
+        pass
 
 
 class TestCheckForBlur(unittest.TestCase):
+
+    def setUp(self):
+        self.bChecker = blur_checker.BlurChecker()
+
     def test_check_for_blur(self):
-        self.assertFalse(False)
+        pass
 
 
 class TestCutQuality(unittest.TestCase):
+
+    def setUp(self):
+        self.iCutter = image_cutter.ImageCutter()
+
     def test_cut_quality(self):
-        self.assertFalse(False)
-
-
-class TestSaveImage(unittest.TestCase):
-    def test_save_image(self):
-        self.assertFalse(False)
+        pass
 
 
 if __name__ == '__main__':
