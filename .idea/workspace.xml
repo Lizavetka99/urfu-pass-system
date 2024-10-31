@@ -4,11 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5dbcbf6a-26f0-43cc-879d-a218f0e47daa" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="bd83d553-e4aa-4cbb-ab89-fed3afd6988b" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/imageHandler/TestPhotoMethods.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/urfu-pass-system.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/urfu-pass-system.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/imageHandler/imageHandler.py" beforeDir="false" afterPath="$PROJECT_DIR$/imageHandler/imageHandler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imageHandler/Humans_faces_dataset/1 (1).jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imageHandler/Humans_faces_dataset/1 (1).jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imageHandler/Humans_faces_dataset/1 (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imageHandler/Humans_faces_dataset/1 (174).jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imageHandler/quality_checker.py" beforeDir="false" afterPath="$PROJECT_DIR$/imageHandler/quality_checker.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,46 +23,118 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="Python-Image-Handler" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 8
-}</component>
-  <component name="ProjectId" id="2nqMymm9NreutQvAB8F8waRJXkL" />
+  <component name="ProjectId" id="2oCCfsVSTzrOJfWaq96VhS5Esnc" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;photo-editor&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/python projects/open cv&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true"
   }
-}</component>
+}]]></component>
+  <component name="RunManager" selected="Python tests.Python tests in TestPhotoMethods.py">
+    <configuration name="Python tests for TestPhotoMethods.TestCheckOtherThings" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="urfu-pass-system" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/imageHandler" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;TestPhotoMethods.TestCheckOtherThings&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests for TestPhotoMethods.TestPhotoMethods" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="urfu-pass-system" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/imageHandler" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;TestPhotoMethods.TestPhotoMethods&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests for TestPhotoMethods.TestPhotoMethods.test_check_for_min_quality_false" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="urfu-pass-system" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/imageHandler" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;TestPhotoMethods.TestPhotoMethods.test_check_for_min_quality_false&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests for TestPhotoMethods.TestPhotoMethods.test_check_for_min_quality_true" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="urfu-pass-system" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/imageHandler" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;TestPhotoMethods.TestPhotoMethods.test_check_for_min_quality_true&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests in TestPhotoMethods.py" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="urfu-pass-system" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/imageHandler" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/imageHandler/TestPhotoMethods.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python tests.Python tests in TestPhotoMethods.py" />
+        <item itemvalue="Python tests.Python tests for TestPhotoMethods.TestCheckOtherThings" />
+        <item itemvalue="Python tests.Python tests for TestPhotoMethods.TestPhotoMethods.test_check_for_min_quality_true" />
+        <item itemvalue="Python tests.Python tests for TestPhotoMethods.TestPhotoMethods" />
+        <item itemvalue="Python tests.Python tests for TestPhotoMethods.TestPhotoMethods.test_check_for_min_quality_false" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="5dbcbf6a-26f0-43cc-879d-a218f0e47daa" name="Changes" comment="" />
-      <created>1729696411047</created>
+      <changelist id="bd83d553-e4aa-4cbb-ab89-fed3afd6988b" name="Changes" comment="" />
+      <created>1730364299662</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1729696411047</updated>
-      <workItem from="1729696412193" duration="6263000" />
+      <updated>1730364299662</updated>
     </task>
     <servers />
-  </component>
-  <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="3" />
   </component>
 </project>
