@@ -26,8 +26,8 @@ class FaceRecognizer:
                                               minNeighbors=5,
                                               minSize=(30, 30))
         if len(faces) == 0:
-            raise ValueError(f'Not founded face')
+            raise ValueError(2)
         if len(faces) > 1:
-            raise ValueError(f'More than one face')
+            raise ValueError(3)
         x, y, w, h = faces[0]
         return x, y, w, h

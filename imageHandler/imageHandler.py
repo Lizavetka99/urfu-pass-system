@@ -15,13 +15,13 @@ class ImageHandler:
 
     def edit_image(self,  image : numpy.ndarray) -> numpy.ndarray:
         if not self.quality_checker.check_for_min_quality(image):
-            raise ValueError("Изображение должно быть минимум 300x400")
+            raise ValueError(1)
 
         image_without_transparency = self.transparency_remover.remove_transparancy(image)
         image_rotated_by_face = self.image_rotator.rotate(image_without_transparency)
         image_face_cut = self.face_recognizer.recognize(image_rotated_by_face)
         if (not self.blur_checker.check_for_blur(image_face_cut)):
-            raise ValueError('Изображение слишком размыто')
+            raise ValueError(4)
         image_3x4 = self.image_cutter.cut_3x4(image_face_cut)
         compressed_image = self.image_cutter.cut_quality(image_3x4)
         self.face_recognizer.recognize(compressed_image)
@@ -35,13 +35,15 @@ class ImageHandler:
             try:
                 edited_image = self.edit_image(image)
                 cv2.imwrite(output_file, edited_image, [cv2.IMWRITE_JPEG_QUALITY, 100])
-            except Exception as e:
-                return f'ValueError: {e}'
+            except ValueError as e:
+                raise ValueError(e.args[0])
         else:
-            return f'Файл {input_file} не найден'
+            return -1
 
     def edit_images_folder(self, input_directory, output_directory):
         messages = dict()
+        if os.path.isfile(input_directory):
+            return -2
         if not os.path.exists(output_directory):
             os.makedirs(output_directory)
 
@@ -51,7 +53,7 @@ class ImageHandler:
             try:
                 self.edit_image_file(input_path, output_path)
             except ValueError as e:
-                messages[filename] = e
+                messages[filename] = e.args[0]
         return messages
 
 
