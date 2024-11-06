@@ -25,7 +25,7 @@ RUN apt-get update && \
 
 COPY FaceRecognizer .
 
-RUN pip install -r requirements.txt --break-system-packages
+RUN pip install -r requirements.txt --break-system-packages --root-user-action=ignore
 
 WORKDIR /app
 COPY --from=publish /app/publish .

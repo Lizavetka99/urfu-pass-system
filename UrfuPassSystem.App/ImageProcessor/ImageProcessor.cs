@@ -10,7 +10,7 @@ public class ImageProcessor(ILogger<ImageProcessor> logger) : IImageProcessor
     {
         using var process = new Process
         {
-            StartInfo = new ProcessStartInfo("python.exe", "python-image-handler/RunImageHandler.py")
+            StartInfo = new ProcessStartInfo("python3", "../app-python/run.py")
             {
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
