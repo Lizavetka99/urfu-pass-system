@@ -1,20 +1,15 @@
 services:
   webapplication:
     build:
-      context: WebApplication
+      context: .
       dockerfile: Dockerfile
     restart: "always"
     ports:
       - 80:8080
     volumes:
-      - "/WebApplication/appsettings.json"
+      - "/appsettings.json"
 
-  facerecognizer:
-    build:
-      context: FaceRecognizer
-      dockerfile: Dockerfile
-
-  database:
+  db:
     image: "docker.io/postgres:14"
     restart: "always"
     ports:

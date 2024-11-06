@@ -16,6 +16,17 @@ FROM build AS publish
 RUN dotnet publish "UrfuPassSystem.App.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
+
+WORKDIR /app-python
+
+RUN apt-get update && \
+    apt-get install -y python3 python3-pip && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY FaceRecognizer/requirements.txt .
+
+RUN pip install -r requirements.txt
+
 WORKDIR /app
 COPY --from=publish /app/publish .
 
