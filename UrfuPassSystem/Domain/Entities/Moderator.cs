@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace UrfuPassSystem.App.Data;
+namespace UrfuPassSystem.Domain.Entities;
 
 public class Moderator
 {

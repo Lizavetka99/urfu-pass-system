@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using UrfuPassSystem.Domain.Entities;
 
 namespace UrfuPassSystem.App.Data;
 

@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using UrfuPassSystem.Domain.Entities;
 
-namespace UrfuPassSystem.App.Data;
+namespace UrfuPassSystem.Domain.Entities;
 
 public class ImageCheck
 {

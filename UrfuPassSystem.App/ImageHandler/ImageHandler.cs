@@ -1,6 +1,7 @@
 ﻿using UrfuPassSystem.App.Data;
 using UrfuPassSystem.App.ImageProcessor;
 using UrfuPassSystem.App.StudentHandler;
+using UrfuPassSystem.Domain.Entities;
 
 namespace UrfuPassSystem.App.ImageHandler;
 

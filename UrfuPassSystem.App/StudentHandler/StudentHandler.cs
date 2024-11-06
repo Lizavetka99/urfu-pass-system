@@ -1,4 +1,5 @@
 ﻿using UrfuPassSystem.App.Data;
+using UrfuPassSystem.Domain.Entities;
 
 namespace UrfuPassSystem.App.StudentHandler;
 

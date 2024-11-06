@@ -12,6 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\UrfuPassSystem\UrfuPassSystem.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
 	<None Update="python-image-handler\**\*.*">
 	 <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</None>

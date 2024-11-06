@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using UrfuPassSystem.App.Data;
 
 namespace UrfuPassSystem.Domain.Entities;
 
