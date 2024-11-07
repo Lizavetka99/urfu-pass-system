@@ -31,6 +31,13 @@ builder.Services.AddScoped<IImageHandler, ImageHandler>();
 
 var app = builder.Build();
 
+await using (var scope = app.Services.CreateAsyncScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    if (await db.Database.EnsureCreatedAsync())
+        scope.ServiceProvider.GetRequiredService<ILogger<Program>>().LogInformation("Database created.");
+}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
