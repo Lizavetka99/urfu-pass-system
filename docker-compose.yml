@@ -24,3 +24,5 @@ services:
       - "POSTGRES_USER=webapplication"
       - "POSTGRES_PASSWORD=5INu4x1ry9vO3c1QxZrfXOXt0dJQeL!tiDjQARErKb2hGrBIsQM0Q1wALruk9Hwr"
       - "POSTGRES_DB=database"
+    depends_on:
+      - db
