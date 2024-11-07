@@ -1,8 +1,9 @@
 ﻿@using Microsoft.EntityFrameworkCore
 @using UrfuPassSystem.App.ArchiveHandler
-@using UrfuPassSystem.App.Data
 @using UrfuPassSystem.App.ImageHandler
 @using UrfuPassSystem.Domain.Entities
+@using UrfuPassSystem.Domain.Enums
+@using UrfuPassSystem.Domain.Services
 
 @page "/check"
 @rendermode InteractiveServer
@@ -69,7 +70,10 @@ else
         {
             ImageId = image.Id,
             CheckTime = DateTime.UtcNow,
-            IsSuccess = isSuccess
+            IsAuto = false,
+            IsEdited = false,
+            FilePath = image.FilePath,
+            ResultCode = ImageCheckResultCode.Success
         };
         await Database.ImageChecks.AddAsync(check);
         await Database.SaveChangesAsync();
@@ -79,24 +83,25 @@ else
     private async Task Update()
     {
         image = await Database.Images
-            .Include(i => i.Check)
-            .Where(i => i.Check == null).FirstOrDefaultAsync();
+            .Include(i => i.Checks)
+            .Where(i => !i.Checks!.Any(c => !c.IsAuto)).FirstOrDefaultAsync();
         if (image == null)
             return;
 
-        if (image.RawFilePath == null)
+        if (image.FilePath == null)
             PreviewRaw = null;
         else
         {
-            var buffer = await File.ReadAllBytesAsync(image.RawFilePath);
+            var buffer = await File.ReadAllBytesAsync(image.FilePath);
             PreviewRaw = $"data:image/jpeg;base64,{Convert.ToBase64String(buffer)}";
         }
 
-        if (image.ProcessedFilePath == null)
+        var autoCheck = image.Checks?.FirstOrDefault(c => c.IsAuto);
+        if (autoCheck == null)
             PreviewProcessed = null;
         else
         {
-            var buffer = await File.ReadAllBytesAsync(image.ProcessedFilePath);
+            var buffer = await File.ReadAllBytesAsync(autoCheck.FilePath);
             PreviewProcessed = $"data:image/jpeg;base64,{Convert.ToBase64String(buffer)}";
         }
     }

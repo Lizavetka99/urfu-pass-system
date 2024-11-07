@@ -1,16 +1,27 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using UrfuPassSystem.Infrastructure;
 
 namespace UrfuPassSystem.Domain.Entities;
 
-public class Student
+/// <summary>Сущность студента.</summary>
+public class Student : Entity
 {
-    [Key]
-    public Guid Id { get; set; }
-    public string? UserName { get; set; }
-    public string? LastName { get; set; }
-    public string? FirstName { get; set; }
-    public string? Patronymic { get; set; }
-    public string? Institutes { get; set; }
-    public string? Departmnets { get; set; }
-    public string? Groups { get; set; }
+    /// <summary>Номер студенческого билета студента.</summary>
+    public required string StudentCardId { get; init; }
+    /// <summary>Имя пользователя студента.</summary>
+    public required string Username { get; init; }
+    /// <summary>Фамилия студента.</summary>
+    public required string? LastName { get; init; }
+    /// <summary>Имя студента.</summary>
+    public required string? FirstName { get; init; }
+    /// <summary>Отчество студента.</summary>
+    public required string? Patronymic { get; init; }
+    /// <summary>Почта студента.</summary>
+    public required string? Email { get; init; }
+    /// <summary>Id института студента.</summary>
+    public required Guid InstituteId { get; init; }
+    /// <summary>Группа студента.</summary>
+    public required string Group { get; init; }
+
+    /// <summary>Институт студента.</summary>
+    public Institute? Institute { get; private set; }
 }

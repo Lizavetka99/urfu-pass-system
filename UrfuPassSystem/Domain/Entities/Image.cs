@@ -1,21 +1,28 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using UrfuPassSystem.Infrastructure;
 
 namespace UrfuPassSystem.Domain.Entities;
 
-public class Image
+/// <summary>Сущность фотографии, отправленной студентом.</summary>
+public class Image : Entity
 {
-    [Key]
-    public Guid Id { get; private set; }
-    public Guid? StudentId { get; set; }
-    public Student? Student { get; set; }
-    public DateTime SendTime { get; set; }
-    public string? OriginalFileName { get; set; }
-    public string? RawFilePath { get; set; }
-    public string? ProcessedFilePath { get; set; }
-    public bool AutoIsSuccess { get; set; }
-    public int AutoResult { get; set; }
+    /// <summary>Номер студенческого билета студента, который отправил фотографию.</summary>
+    public required string StudentCardId { get; init; }
+    /// <summary>Время отправки фотографии студентом.</summary>
+    public required DateTime SentTime { get; init; }
+    /// <summary>Изначальное название файла фотографии (с расширением).</summary>
+    public required string OriginalFileName { get; init; }
+    /// <summary>Путь к исходному файлу фотографии на сервере.</summary>
+    public required string FilePath { get; init; }
+    /// <summary>Файл был удален с сервера.</summary>
+    public bool IsDeleted { get; private set; }
 
-    public ImageCheck? Check { get; set; }
+    /// <summary>Проверки фотографии.</summary>
+    public IReadOnlyCollection<ImageCheck>? Checks { get; private set; }
 
-    public bool IsDeleted { get; set; }
+    /// <summary>Помечает файл, как удаленный.</summary>
+    public Image MarkDeleted()
+    {
+        IsDeleted = true;
+        return this;
+    }
 }

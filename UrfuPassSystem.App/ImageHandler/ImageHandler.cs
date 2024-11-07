@@ -1,7 +1,8 @@
-﻿using UrfuPassSystem.App.Data;
-using UrfuPassSystem.App.ImageProcessor;
+﻿using UrfuPassSystem.App.ImageProcessor;
 using UrfuPassSystem.App.StudentHandler;
 using UrfuPassSystem.Domain.Entities;
+using UrfuPassSystem.Domain.Enums;
+using UrfuPassSystem.Domain.Services;
 
 namespace UrfuPassSystem.App.ImageHandler;
 
@@ -35,15 +36,22 @@ public class ImageHandler(ApplicationDbContext database,
 
         var image = new Image()
         {
-            StudentId = student?.Id,
-            SendTime = DateTime.UtcNow,
+            StudentCardId = Random.Shared.Next(1000, 10000).ToString(),
+            SentTime = DateTime.UtcNow,
             OriginalFileName = originalName,
-            RawFilePath = rawPath,
-            ProcessedFilePath = isSuccess ? processedPath : null,
-            AutoIsSuccess = isSuccess,
-            AutoResult = processorResult
+            FilePath = rawPath
         };
         await _database.Images.AddAsync(image);
+        await _database.SaveChangesAsync();
+        var check = new ImageCheck()
+        {
+            ImageId = image.Id,
+            IsAuto = true,
+            IsEdited = true,
+            FilePath = processedPath,
+            ResultCode = isSuccess ? ImageCheckResultCode.Success : ImageCheckResultCode.UnexpectedError
+        };
+        await _database.ImageChecks.AddAsync(check);
         await _database.SaveChangesAsync();
         return image;
     }

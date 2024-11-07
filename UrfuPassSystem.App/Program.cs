@@ -2,8 +2,9 @@ using UrfuPassSystem.App.Components;
 using UrfuPassSystem.App.ArchiveHandler;
 using UrfuPassSystem.App.StudentHandler;
 using UrfuPassSystem.App.ImageHandler;
-using UrfuPassSystem.App.Data;
 using UrfuPassSystem.App.ImageProcessor;
+using Microsoft.EntityFrameworkCore;
+using UrfuPassSystem.Domain.Services;
 
 if (!Directory.Exists("images"))
     Directory.CreateDirectory("images");
@@ -19,7 +20,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddDbContext<ApplicationDbContext>();
+builder.Services.AddDbContext<ApplicationDbContext>(o => o
+    .UseNpgsql(builder.Configuration.GetConnectionString("database")
+        ?? throw new InvalidOperationException("Connection string 'database' not found.")));
 
 builder.Services.AddSingleton<IArchiveHandler, ArchiveHandler>();
 builder.Services.AddScoped<IStudentHandler, StudentHandler>();

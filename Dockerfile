@@ -19,8 +19,8 @@ FROM base AS final
 
 WORKDIR /app-python
 
-RUN apt update && \
-    apt install -y python3 python3-pip libgl1 && \
+RUN apt-get update && \
+    apt-get install -y python3 python3-pip ffmpeg libsm6 libxext6 && \
     rm -rf /var/lib/apt/lists/*
 
 COPY FaceRecognizer .

@@ -1,6 +1,6 @@
 ﻿@using Microsoft.EntityFrameworkCore
-@using UrfuPassSystem.App.Data
 @using UrfuPassSystem.Domain.Entities
+@using UrfuPassSystem.Domain.Services
 
 @page "/list"
 @attribute [StreamRendering]
@@ -20,9 +20,8 @@ else
         <thead>
             <tr>
                 <th>Время отправки</th>
-                <th>Фамилия</th>
-                <th>Имя</th>
-                <th>Отчество</th>
+                <th>Номер студенческого</th>
+                <th>Название файла</th>
                 <th>Статус проверки</th>
             </tr>
         </thead>
@@ -30,11 +29,10 @@ else
             @foreach (var image in images)
             {
                 <tr>
-                    <td>@image.SendTime.ToString()</td>
-                    <td>@image.Student?.LastName</td>
-                    <td>@image.Student?.FirstName</td>
-                    <td>@image.Student?.Patronymic</td>
-                    <td>@image.Check?.IsSuccess</td>
+                    <td>@image.SentTime.ToString()</td>
+                    <td>@image.StudentCardId</td>
+                    <td>@image.OriginalFileName</td>
+                    <td>@image.Checks?.SingleOrDefault()?.IsSuccess</td>
                 </tr>
             }
         </tbody>
@@ -47,8 +45,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         images = await Database.Images
-            .Include(i => i.Student)
-            .Include(i => i.Check)
+            .Include(i => i.Checks!.OrderByDescending(c => c.CheckTime).Take(1))
             .ToArrayAsync();
     }
 }

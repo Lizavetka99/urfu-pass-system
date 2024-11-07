@@ -1,5 +1,5 @@
-﻿using UrfuPassSystem.App.Data;
-using UrfuPassSystem.Domain.Entities;
+﻿using UrfuPassSystem.Domain.Entities;
+using UrfuPassSystem.Domain.Services;
 
 namespace UrfuPassSystem.App.StudentHandler;
 
@@ -20,7 +20,8 @@ public class StudentHandler(ApplicationDbContext database) : IStudentHandler
 
         // TODO: check if exist
 
-        var student = new Student
+        return null;
+        /*var student = new Student
         {
             LastName = lastName,
             FirstName = firstName,
@@ -28,6 +29,6 @@ public class StudentHandler(ApplicationDbContext database) : IStudentHandler
         };
         await _database.Students.AddAsync(student);
         await _database.SaveChangesAsync();
-        return student;
+        return student;*/
     }
 }
