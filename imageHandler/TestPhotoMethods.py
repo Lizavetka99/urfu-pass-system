@@ -82,9 +82,15 @@ class TestTurnFace(unittest.TestCase):
     def setUp(self):
         self.iRotator = image_rotator.ImageRotator()
 
-    def test_turn_face(self):
-        pass
+    def test_turn_face_should_turn_right(self):
+        for image, filename in readImages("TestPhotos/TestImageRotator/RotateRight"):
+            new_image = self.iRotator.rotate(image)
+            self.assertEqual(new_image, cv2.rotate(image, cv2.ROTATE_90_CLOCKWISE), "Error in " + filename)
 
+    def test_turn_face_should_turn_left(self):
+        for image, filename in readImages("TestPhotos/TestImageRotator/RotateLeft"):
+            new_image = self.iRotator.rotate(image)
+            self.assertEqual(new_image, cv2.rotate(image, cv2.ROTATE_90_COUNTERCLOCKWISE), "Error in " + filename)
 
 class TestCheckForBlur(unittest.TestCase):
 
