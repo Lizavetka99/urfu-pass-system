@@ -55,9 +55,27 @@ class TestIdentifyFace(unittest.TestCase):
     def setUp(self):
         self.fRecognizer = face_recognizer.FaceRecognizer()
 
-    def test_identify_face(self):
-        pass
+    def test_identify_face_no_faces(self):
+        for image, filename in readImages(
+                "TestPhotos/TestIdentifyFace_noFaces"):
+            with self.assertRaises(ValueError) as context:
+                img = self.fRecognizer.get_face_rectangle(image)
+            self.assertEqual(str(context.exception), 'Not founded face')
 
+    def test_identify_face_more_than_one_faces(self):
+        for image, filename in readImages(
+                "TestPhotos/TestIdentifyFace_More_Than_One_Face"):
+            with self.assertRaises(ValueError) as context:
+                img = self.fRecognizer.get_face_rectangle(image)
+            self.assertEqual(str(context.exception), 'More than one face')
+
+    def test_identify_face_true(self):
+        for image, filename in readImages(
+                "TestPhotos/TestIdentifyFace_one_face"):
+            try:
+                self.fRecognizer.recognize(image)
+            except Exception as e:
+                self.fail(f"Method recognize raised exception {e}")
 
 class TestTurnFace(unittest.TestCase):
 
