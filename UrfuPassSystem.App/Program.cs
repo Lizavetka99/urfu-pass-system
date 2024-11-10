@@ -20,9 +20,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddDbContext<ApplicationDbContext>(o => o
-    .UseNpgsql(builder.Configuration.GetConnectionString("database")
-        ?? throw new InvalidOperationException("Connection string 'database' not found.")));
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddDbContext<ApplicationDbContext>(o => o
+        .UseInMemoryDatabase("inmemorydb"));
+}
+else
+{
+    builder.Services.AddDbContext<ApplicationDbContext>(o => o
+        .UseNpgsql(builder.Configuration.GetConnectionString("database")
+            ?? throw new InvalidOperationException("Connection string 'database' not found.")));
+}
 
 builder.Services.AddSingleton<IArchiveHandler, ArchiveHandler>();
 builder.Services.AddScoped<IStudentHandler, StudentHandler>();

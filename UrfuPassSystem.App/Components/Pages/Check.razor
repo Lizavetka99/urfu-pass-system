@@ -97,7 +97,7 @@ else
         }
 
         var autoCheck = image.Checks?.FirstOrDefault(c => c.IsAuto);
-        if (autoCheck == null)
+        if (autoCheck == null || !File.Exists(autoCheck.FilePath))
             PreviewProcessed = null;
         else
         {
