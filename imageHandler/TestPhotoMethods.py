@@ -112,8 +112,10 @@ class TestCutQuality(unittest.TestCase):
         self.iCutter = image_cutter.ImageCutter()
 
     def test_cut_quality(self):
-        pass
-
+        for image, filename in readImages("TestPhotos/TestCutQuality"):
+            img3x4 = self.iCutter.cut_3x4(image)
+            img_cut = self.iCutter.cut_quality(img3x4)
+            self.assertEqual(img_cut.shape[:2], (1200, 900), "Error in " + filename)
 
 if __name__ == '__main__':
     unittest.main()
