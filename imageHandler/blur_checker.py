@@ -4,7 +4,7 @@ import cv2
 class BlurChecker:
     def check_for_blur(self, image):
         """Возвращает False, если изображение слишком размыто"""
-        minimumQuality = 0
+        minimumQuality = 100
 
         #  Еще нужно тестить на множестве фотографий, желательно на квадратах лиц.
         #  Минимальное значение "чёткости" пока условно.

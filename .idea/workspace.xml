@@ -7,7 +7,7 @@
     <list default="true" id="bd83d553-e4aa-4cbb-ab89-fed3afd6988b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/imageHandler/TestPhotoMethods.py" beforeDir="false" afterPath="$PROJECT_DIR$/imageHandler/TestPhotoMethods.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/imageHandler/Tests/r.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imageHandler/blur_checker.py" beforeDir="false" afterPath="$PROJECT_DIR$/imageHandler/blur_checker.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,8 +44,8 @@
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager" selected="Python tests.Python tests for TestPhotoMethods.TestTurnFace.test_turn_face_should_turn_right">
-    <configuration name="Python tests for TestPhotoMethods.TestIdentifyFace.test_identify_face" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python tests.Python tests for TestPhotoMethods.TestCheckForBlur.test_check_for_blur_Good">
+    <configuration name="Python tests for TestPhotoMethods.TestCheckForBlur.test_check_for_blur" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="urfu-pass-system" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -55,11 +55,11 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;TestPhotoMethods.TestIdentifyFace.test_identify_face&quot;" />
+      <option name="_new_target" value="&quot;TestPhotoMethods.TestCheckForBlur.test_check_for_blur&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests for TestPhotoMethods.TestIdentifyFace.test_identify_face_more_than_one_faces" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests for TestPhotoMethods.TestCheckForBlur.test_check_for_blur_Bad" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="urfu-pass-system" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -69,7 +69,35 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;TestPhotoMethods.TestIdentifyFace.test_identify_face_more_than_one_faces&quot;" />
+      <option name="_new_target" value="&quot;TestPhotoMethods.TestCheckForBlur.test_check_for_blur_Bad&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests for TestPhotoMethods.TestCheckForBlur.test_check_for_blur_Good" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="urfu-pass-system" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/imageHandler" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;TestPhotoMethods.TestCheckForBlur.test_check_for_blur_Good&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests for TestPhotoMethods.TestIdentifyFace" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="urfu-pass-system" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/imageHandler" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;TestPhotoMethods.TestIdentifyFace&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
@@ -87,41 +115,13 @@
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests for TestPhotoMethods.TestTurnFace.test_turn_face_should_turn_left" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
-      <module name="urfu-pass-system" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/imageHandler" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;TestPhotoMethods.TestTurnFace.test_turn_face_should_turn_left&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
-      <method v="2" />
-    </configuration>
-    <configuration name="Python tests for TestPhotoMethods.TestTurnFace.test_turn_face_should_turn_right" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
-      <module name="urfu-pass-system" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/imageHandler" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;TestPhotoMethods.TestTurnFace.test_turn_face_should_turn_right&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python tests.Python tests for TestPhotoMethods.TestTurnFace.test_turn_face_should_turn_right" />
-        <item itemvalue="Python tests.Python tests for TestPhotoMethods.TestTurnFace.test_turn_face_should_turn_left" />
+        <item itemvalue="Python tests.Python tests for TestPhotoMethods.TestCheckForBlur.test_check_for_blur_Good" />
+        <item itemvalue="Python tests.Python tests for TestPhotoMethods.TestCheckForBlur.test_check_for_blur_Bad" />
+        <item itemvalue="Python tests.Python tests for TestPhotoMethods.TestCheckForBlur.test_check_for_blur" />
+        <item itemvalue="Python tests.Python tests for TestPhotoMethods.TestIdentifyFace" />
         <item itemvalue="Python tests.Python tests for TestPhotoMethods.TestIdentifyFace.test_identify_face_true" />
-        <item itemvalue="Python tests.Python tests for TestPhotoMethods.TestIdentifyFace.test_identify_face_more_than_one_faces" />
-        <item itemvalue="Python tests.Python tests for TestPhotoMethods.TestIdentifyFace.test_identify_face" />
       </list>
     </recent_temporary>
   </component>

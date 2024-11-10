@@ -97,8 +97,13 @@ class TestCheckForBlur(unittest.TestCase):
     def setUp(self):
         self.bChecker = blur_checker.BlurChecker()
 
-    def test_check_for_blur(self):
-        pass
+    def test_check_for_blur_Bad(self):
+        for image, filename in readImages("TestPhotos/TestBlurCheck/Bad"):
+            self.assertEqual(self.bChecker.check_for_blur(image), False, "Error in " + filename)
+
+    def test_check_for_blur_Good(self):
+        for image, filename in readImages("TestPhotos/TestBlurCheck/Good"):
+            self.bChecker.check_for_blur(image)
 
 
 class TestCutQuality(unittest.TestCase):
