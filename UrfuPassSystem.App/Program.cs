@@ -32,7 +32,7 @@ else
             ?? throw new InvalidOperationException("Connection string 'database' not found.")));
 }
 
-builder.Services.AddOptions<ImageProcessorOptions>("ImageProcessor");
+builder.Services.Configure<ImageProcessorOptions>(builder.Configuration.GetSection("ImageProcessor"));
 builder.Services.AddSingleton<IArchiveHandler, ArchiveHandler>();
 builder.Services.AddScoped<IStudentHandler, StudentHandler>();
 builder.Services.AddSingleton<IImageProcessor, ImageProcessor>();
