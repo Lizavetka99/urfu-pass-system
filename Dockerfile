@@ -23,7 +23,7 @@ RUN apt-get update && \
     apt-get install -y python3 python3-pip ffmpeg libsm6 libxext6 && \
     rm -rf /var/lib/apt/lists/*
 
-COPY FaceRecognizer .
+COPY ImageHandler .
 
 RUN pip install -r requirements.txt --break-system-packages --root-user-action=ignore
 

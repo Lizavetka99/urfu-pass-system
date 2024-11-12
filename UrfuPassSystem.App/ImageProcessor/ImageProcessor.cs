@@ -1,16 +1,25 @@
-﻿using System.Diagnostics;
+﻿using Microsoft.Extensions.Options;
+using System.Diagnostics;
 
 namespace UrfuPassSystem.App.ImageProcessor;
 
-public class ImageProcessor(ILogger<ImageProcessor> logger) : IImageProcessor
+public class ImageProcessor : IImageProcessor
 {
-    private readonly ILogger<ImageProcessor> _logger = logger;
+    private readonly ILogger<ImageProcessor> _logger;
+    private ImageProcessorOptions _options;
+
+    public ImageProcessor(IOptionsMonitor<ImageProcessorOptions> options, ILogger<ImageProcessor> logger)
+    {
+        _logger = logger;
+        _options = options.CurrentValue;
+        options.OnChange(newOptions => _options = newOptions);
+    }
 
     public async Task<int> CheckImage(string filePath, string destinationPath)
     {
         using var process = new Process
         {
-            StartInfo = new ProcessStartInfo("python3", "../app-python/run.py")
+            StartInfo = new ProcessStartInfo(_options.Program, _options.Arguments)
             {
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,

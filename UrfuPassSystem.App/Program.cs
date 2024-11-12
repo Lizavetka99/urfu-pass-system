@@ -24,6 +24,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(o => o
     .UseNpgsql(builder.Configuration.GetConnectionString("database")
         ?? throw new InvalidOperationException("Connection string 'database' not found.")));
 
+builder.Services.AddOptions<ImageProcessorOptions>("ImageProcessor");
 builder.Services.AddSingleton<IArchiveHandler, ArchiveHandler>();
 builder.Services.AddScoped<IStudentHandler, StudentHandler>();
 builder.Services.AddSingleton<IImageProcessor, ImageProcessor>();
