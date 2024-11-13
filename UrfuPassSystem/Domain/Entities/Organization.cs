@@ -11,5 +11,5 @@ public class Organization : Entity
     /// <summary>Сотрудники организации.</summary>
     public IReadOnlyCollection<Employee>? Employees { get; private set; }
     /// <summary>Институты, к фотографиям студентов из которых имеет доступ организация.</summary>
-    public IReadOnlyCollection<Institute>? Institutes { get; private set; }
+    public ICollection<Institute>? Institutes { get; private set; }
 }

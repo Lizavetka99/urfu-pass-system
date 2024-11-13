@@ -41,16 +41,15 @@ public class ImageHandler(ApplicationDbContext database,
             OriginalFileName = originalName,
             FilePath = rawPath
         };
-        await _database.Images.AddAsync(image);
-        await _database.SaveChangesAsync();
         var check = new ImageCheck()
         {
-            ImageId = image.Id,
+            Image = image,
             IsAuto = true,
             IsEdited = true,
             FilePath = processedPath,
             ResultCode = isSuccess ? ImageCheckResultCode.Success : ImageCheckResultCode.UnexpectedError
         };
+        await _database.Images.AddAsync(image);
         await _database.ImageChecks.AddAsync(check);
         await _database.SaveChangesAsync();
         return image;
