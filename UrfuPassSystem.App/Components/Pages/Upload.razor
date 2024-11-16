@@ -27,6 +27,8 @@
 
 <button type="button" class="btn btn-primary" @onclick="StartProcess">Обработать</button>
 
+<div style="color: red;">@ErrorMessage</div>
+
 <script lang="js">
     window.previewImage = (inputElem, imgElem) => {
         const url = URL.createObjectURL(inputElem.files[0]);
@@ -39,9 +41,9 @@
     public string FileName { get; set; } = "";
     public long FileSize { get; set; }
     public string FileType { get; set; } = "";
-    public string? FilePath{ get; set; }
-
+    public string? FilePath { get; set; }
     public string? Preview { get; set; }
+    public string ErrorMessage { get; set; } = "";
 
     const int MAX_FILESIZE = 100 * 1024 * 1024; // 100 MB
 
@@ -58,6 +60,19 @@
         FileType = file.ContentType;
         FileName = file.Name;
 
+        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".jfif", ".heic" };
+        var archiveExtensions = new[] { ".zip", ".rar" };
+        var fileExtension = Path.GetExtension(FileName).ToLower();
+
+        if (!allowedExtensions.Contains(fileExtension) && !archiveExtensions.Contains(fileExtension))
+        {
+            ErrorMessage = "Недопустимый тип файла. Разрешены только .jpg, .jpeg, .png, .jfif, .heic, .zip, .rar.";
+            Preview = string.Empty;
+            FilePath = null;
+            return;
+        }
+
+        ErrorMessage = "";
 
         if (FileType.StartsWith("image"))
         {
@@ -80,12 +95,27 @@
     {
         if (FilePath == null)
             return;
-        if (FileType.Contains("zip"))
+
+        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".jfif", ".heic" };
+
+        if (FileType.Contains("zip") || FileType.Contains("rar"))
         {
             var randomFileName = Path.GetRandomFileName();
             var path = Path.GetFullPath(Path.Combine("images/temp", randomFileName));
             await ArchiveHandler.ExtractArchive(FilePath, path);
+
             var files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
+            foreach (var file in files)
+            {
+                var fileExtension = Path.GetExtension(file).ToLower();
+                if (!allowedExtensions.Contains(fileExtension))
+                {
+                    ErrorMessage = $"Архив содержит недопустимый файл: {Path.GetFileName(file)}";
+                    Directory.Delete(path, true);
+                    return;
+                }
+            }
+
             foreach (var file in files)
             {
                 await SaveImage(file);
@@ -94,13 +124,23 @@
             Directory.Delete(path, true);
         }
         else
+        {
+            var fileExtension = Path.GetExtension(FilePath).ToLower();
+            if (!allowedExtensions.Contains(fileExtension))
+            {
+                ErrorMessage = "Недопустимый тип файла.";
+                return;
+            }
             await SaveImage(FilePath);
+        }
+
         File.Delete(FilePath);
         Preview = null;
         FilePath = null;
         FileName = "";
         FileSize = 0;
         FileType = "";
+        ErrorMessage = "";
     }
 
     private async Task SaveImage(string imagePath)
