@@ -2,21 +2,13 @@ using UrfuPassSystem.App.Components;
 using UrfuPassSystem.App.ArchiveHandler;
 using UrfuPassSystem.App.StudentHandler;
 using UrfuPassSystem.App.ImageHandler;
-using UrfuPassSystem.App.ImageProcessor;
 using Microsoft.EntityFrameworkCore;
 using UrfuPassSystem.Domain.Services;
-
-if (!Directory.Exists("images"))
-    Directory.CreateDirectory("images");
-if (!Directory.Exists("images/temp"))
-    Directory.CreateDirectory("images/temp");
-if (!Directory.Exists("images/raw"))
-    Directory.CreateDirectory("images/raw");
-if (!Directory.Exists("images/processed"))
-    Directory.CreateDirectory("images/processed");
+using UrfuPassSystem.Infrastructure.ImageStorage;
+using UrfuPassSystem.Infrastructure.ImageProcessor;
 
 var builder = WebApplication.CreateBuilder(args);
-// Add services to the container.
+
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
@@ -31,6 +23,9 @@ else
         .UseNpgsql(builder.Configuration.GetConnectionString("database")
             ?? throw new InvalidOperationException("Connection string 'database' not found.")));
 }
+
+builder.Services.Configure<ImageStorageOptions>(builder.Configuration.GetSection("ImageStorage"));
+builder.Services.AddSingleton<IImageStorage, ImageStorage>();
 
 builder.Services.Configure<ImageProcessorOptions>(builder.Configuration.GetSection("ImageProcessor"));
 builder.Services.AddSingleton<IArchiveHandler, ArchiveHandler>();
@@ -47,7 +42,6 @@ await using (var scope = app.Services.CreateAsyncScope())
         scope.ServiceProvider.GetRequiredService<ILogger<Program>>().LogInformation("Database created.");
 }
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);

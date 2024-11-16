@@ -1,8 +1,8 @@
-﻿using UrfuPassSystem.App.ImageProcessor;
-using UrfuPassSystem.App.StudentHandler;
+﻿using UrfuPassSystem.App.StudentHandler;
 using UrfuPassSystem.Domain.Entities;
 using UrfuPassSystem.Domain.Enums;
 using UrfuPassSystem.Domain.Services;
+using UrfuPassSystem.Infrastructure.ImageProcessor;
 
 namespace UrfuPassSystem.App.ImageHandler;
 
