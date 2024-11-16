@@ -22,6 +22,7 @@ else
                 <th>Время отправки</th>
                 <th>Номер студенческого</th>
                 <th>Название файла</th>
+                <th>Превью</th>
                 <th>Статус проверки</th>
             </tr>
         </thead>
@@ -32,6 +33,7 @@ else
                     <td>@image.SentTime.ToString()</td>
                     <td>@image.StudentCardId</td>
                     <td>@image.OriginalFileName</td>
+                    <td><img height="50" src="@image.FilePath" /></td>
                     <td>@image.Checks?.SingleOrDefault()?.IsSuccess</td>
                 </tr>
             }

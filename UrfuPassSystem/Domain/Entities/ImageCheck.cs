@@ -29,6 +29,16 @@ public class ImageCheck : Entity
     /// <summary>Код результата проверки.</summary>
     public required ImageCheckResultCode ResultCode { get; init; }
 
+    /// <summary>Файл был удален с сервера.</summary>
+    public bool IsDeleted { get; private set; }
+
     /// <summary>Была ли проверка успешна.</summary>
     public bool IsSuccess => ResultCode == ImageCheckResultCode.Success;
+
+    /// <summary>Помечает файл, как удаленный.</summary>
+    public ImageCheck MarkDeleted()
+    {
+        IsDeleted = true;
+        return this;
+    }
 }
