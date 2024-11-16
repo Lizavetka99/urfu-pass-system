@@ -1,34 +1,26 @@
-﻿using UrfuPassSystem.App.StudentHandler;
-using UrfuPassSystem.Domain.Entities;
+﻿using UrfuPassSystem.Domain.Entities;
 using UrfuPassSystem.Domain.Enums;
 using UrfuPassSystem.Domain.Services;
 using UrfuPassSystem.Infrastructure.ImageProcessor;
+using UrfuPassSystem.Infrastructure.ImageStorage;
 
 namespace UrfuPassSystem.App.ImageHandler;
 
-public class ImageHandler(ApplicationDbContext database,
-    IStudentHandler studentHandler, IImageProcessor processor) : IImageHandler
+public class ImageHandler(ApplicationDbContext database, // TODO: remove database from constructor..
+    IImageStorage imageStorage, IImageProcessor processor) : IImageHandler
 {
     private readonly ApplicationDbContext _database = database;
-    private readonly IStudentHandler _studentHandler = studentHandler;
+    private readonly IImageStorage _imageStorage = imageStorage;
     private readonly IImageProcessor _processor = processor;
 
-    private readonly string _rawImagesPath = "images/raw";
-    private readonly string _processedImagesPath = "images/processed";
     private readonly string _processedImagesExtension = "jpg";
 
     public async Task<Image> SaveImage(string rawFilePath)
     {
         var originalName = Path.GetFileName(rawFilePath);
-        // TODO: check if exist
-        var rawName = Path.ChangeExtension(Path.GetRandomFileName(), Path.GetExtension(rawFilePath));
-        var rawPath = Path.Combine(_rawImagesPath, rawName);
-        var processedName = Path.ChangeExtension(Path.GetRandomFileName(), _processedImagesExtension);
-        var processedPath = Path.Combine(_processedImagesPath, processedName);
-
-        var student = await _studentHandler.CreateStudentFromFileName(originalName);
-
+        var rawPath = _imageStorage.CreateImageFile(Path.GetExtension(rawFilePath));
         File.Copy(rawFilePath, rawPath);
+        var processedPath = _imageStorage.CreateImageFile(_processedImagesExtension);
 
         var processorResult = await _processor.CheckImage(rawPath, processedPath);
 
