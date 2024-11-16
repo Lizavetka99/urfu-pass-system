@@ -12,7 +12,7 @@ public class ImageStorage : IImageStorage
     {
         _options = options.CurrentValue;
         _logger = logger;
-        options.OnChange(o => _logger.LogWarning("Not supported."));
+        options.OnChange(o => _logger.LogWarning("Options change not supported."));
     }
 
     public ITempFolger CreateTempFolger()
@@ -36,12 +36,17 @@ public class ImageStorage : IImageStorage
     {
         for (var i = 0; i < 100; i++)
         {
-            var path = Path.Combine(_options.ImagesPath,
-                RandomName(_options.ImagesSubFolgerNameSize),
+            var subfolgerPath = Path.Combine(_options.ImagesPath,
+                RandomName(_options.ImagesSubFolgerNameSize));
+            var path = Path.Combine(subfolgerPath,
                 RandomName(_options.ImageNameSize));
             var filePath = Path.ChangeExtension(path, extension);
             if (!Path.Exists(filePath))
+            {
+                if (!Directory.Exists(subfolgerPath))
+                    Directory.CreateDirectory(subfolgerPath);
                 return filePath;
+            }
         }
         throw new InvalidOperationException("Too many unsuccessful attempts to find empty image name.");
     }
