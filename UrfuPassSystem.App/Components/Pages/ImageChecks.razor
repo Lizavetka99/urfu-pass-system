@@ -1,0 +1,63 @@
+﻿@using Microsoft.EntityFrameworkCore
+@using UrfuPassSystem.Domain.Entities
+@using UrfuPassSystem.Domain.Services
+
+@page "/checks"
+@rendermode InteractiveServer
+@attribute [StreamRendering]
+@inject ApplicationDbContext Database
+
+<PageTitle>Проверки</PageTitle>
+
+<h1>Проверки</h1>
+
+@if (imageChecks == null)
+{
+    <p><em>Загрузка...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Время проверки</th>
+                <th>Проверяющий</th>
+                <th>Номер студенческого</th>
+                <th>Превью</th>
+                <th>Статус проверки</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var check in imageChecks)
+            {
+                <tr>
+                    <td>@check.CheckTime.ToString()</td>
+                    <td>@check.Employee?.Username</td>
+                    <td>@check.Image.StudentCardId</td>
+                    <td><img height="50" src="@check.FilePath" /></td>
+                    <td>@check.IsSuccess</td>
+                    <td><button type="button" class="btn btn-danger" @onclick="() => Delete(check)">Удалить</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<ImageCheck>? imageChecks;
+
+    protected override async Task OnInitializedAsync()
+    {
+        imageChecks = await Database.ImageChecks
+            .Include(i => i.Image).Where(c => !c.IsAuto && !c.IsDeleted)
+            .ToListAsync();
+    }
+
+    private async Task Delete(ImageCheck imageCheck)
+    {
+        imageCheck.MarkDeleted();
+        imageChecks?.Remove(imageCheck);
+        await Database.SaveChangesAsync();
+    }
+}

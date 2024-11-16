@@ -1,4 +1,4 @@
-using UrfuPassSystem.App.Components;
+﻿using UrfuPassSystem.App.Components;
 using UrfuPassSystem.App.ArchiveHandler;
 using UrfuPassSystem.App.StudentHandler;
 using UrfuPassSystem.App.ImageHandler;
@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using UrfuPassSystem.Domain.Services;
 using UrfuPassSystem.Infrastructure.ImageStorage;
 using UrfuPassSystem.Infrastructure.ImageProcessor;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +37,14 @@ builder.Services.AddScoped<IImageHandler, ImageHandler>();
 
 var app = builder.Build();
 
+{
+    var options = app.Services.GetRequiredService<IOptions<ImageStorageOptions>>().Value;
+    if (!Directory.Exists(options.TempPath))
+        Directory.CreateDirectory(options.TempPath);
+    if (!Directory.Exists(options.ImagesPath))
+        Directory.CreateDirectory(options.ImagesPath);
+}
+
 await using (var scope = app.Services.CreateAsyncScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
@@ -52,6 +62,15 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
+
+//TODO: требование авторизации для доступа к изображением.
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(app.Environment.ContentRootPath, "images")),
+    RequestPath = "/images"
+});
+
 app.UseAntiforgery();
 
 app.MapRazorComponents<App>()

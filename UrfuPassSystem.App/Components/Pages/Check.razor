@@ -73,7 +73,7 @@ else
             IsAuto = false,
             IsEdited = false,
             FilePath = image.FilePath,
-            ResultCode = ImageCheckResultCode.Success
+            ResultCode = isSuccess ? ImageCheckResultCode.Success : ImageCheckResultCode.UnexpectedError
         };
         await Database.ImageChecks.AddAsync(check);
         await Database.SaveChangesAsync();
@@ -84,25 +84,16 @@ else
     {
         image = await Database.Images
             .Include(i => i.Checks)
-            .Where(i => !i.Checks!.Any(c => !c.IsAuto)).FirstOrDefaultAsync();
+            .Where(i => !i.Checks!.Any(c => !c.IsAuto && !c.IsDeleted)).FirstOrDefaultAsync();
         if (image == null)
             return;
 
-        if (image.FilePath == null)
-            PreviewRaw = null;
-        else
-        {
-            var buffer = await File.ReadAllBytesAsync(image.FilePath);
-            PreviewRaw = $"data:image/jpeg;base64,{Convert.ToBase64String(buffer)}";
-        }
+        PreviewRaw = image.FilePath;
 
         var autoCheck = image.Checks?.FirstOrDefault(c => c.IsAuto);
         if (autoCheck == null || !File.Exists(autoCheck.FilePath))
             PreviewProcessed = null;
         else
-        {
-            var buffer = await File.ReadAllBytesAsync(autoCheck.FilePath);
-            PreviewProcessed = $"data:image/jpeg;base64,{Convert.ToBase64String(buffer)}";
-        }
+            PreviewProcessed = autoCheck.FilePath;
     }
 }
