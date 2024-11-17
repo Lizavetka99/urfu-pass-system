@@ -1,30 +1,31 @@
 import numpy
 import cv2
 import os
-import face_recognizer, image_cutter, quality_checker, transparency_remover, \
-    image_rotator, blur_checker
+import image_cutter, quality_checker, transparency_remover, \
+    image_rotator, blur_checker, face_square_recogniser
 
 class ImageHandler:
     def __init__(self):
-        self.face_recognizer = face_recognizer.FaceRecognizer()
         self.image_cutter = image_cutter.ImageCutter()
         self.quality_checker = quality_checker.QualityChecker()
         self.transparency_remover = transparency_remover.TransparencyRemover()
         self.image_rotator = image_rotator.ImageRotator()
         self.blur_checker = blur_checker.BlurChecker()
+        self.face_square_recognizer = face_square_recogniser.FaceSquareRecognizer()
 
     def edit_image(self,  image : numpy.ndarray) -> numpy.ndarray:
         if not self.quality_checker.check_for_min_quality(image):
             raise ValueError(1)
 
         image_without_transparency = self.transparency_remover.remove_transparancy(image)
-        image_rotated_by_face = self.image_rotator.rotate(image_without_transparency)
-        image_face_cut = self.face_recognizer.recognize(image_rotated_by_face)
-        if (not self.blur_checker.check_for_blur(image_face_cut)):
+        face_square = self.face_square_recognizer.get_face_rectangle(image_without_transparency)
+        image_rotated_by_face = self.image_rotator.rotate(image_without_transparency, face_square)
+        if (not self.blur_checker.check_for_blur(image_rotated_by_face, face_square)):
             raise ValueError(4)
+        image_face_cut = self.image_cutter.cut_in_proportions(image_rotated_by_face, face_square)
         image_3x4 = self.image_cutter.cut_3x4(image_face_cut)
         compressed_image = self.image_cutter.cut_quality(image_3x4)
-        self.face_recognizer.recognize(compressed_image)
+        self.face_square_recognizer.get_face_rectangle(compressed_image)
         return compressed_image
 
     def edit_image_file(self, input_file, output_file):

@@ -1,10 +1,8 @@
-import face_recognizer
 import cv2
 
 class ImageRotator:
-    def rotate(self, image):
-        start_x, start_y, width, height = face_recognizer.FaceRecognizer()\
-            .get_face_rectangle(image)
+    def rotate(self, image, face_square):
+        start_x, start_y, width, height = face_square
         rotated_image = image
         if (width / height) >= 1.2:
             if start_x >= width / 3:
