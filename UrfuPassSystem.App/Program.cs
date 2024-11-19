@@ -9,6 +9,11 @@ using UrfuPassSystem.Infrastructure.ImageProcessor;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
 
+if (!Directory.Exists("images"))
+    Directory.CreateDirectory("images");
+if (!Directory.Exists("images/temp"))
+    Directory.CreateDirectory("images/temp");
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorComponents()
