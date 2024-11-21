@@ -47,7 +47,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         images = await Database.Images
-            .Include(i => i.Checks!.OrderByDescending(c => c.CheckTime).Take(1))
+            .Include(i => i.Checks!.Where(c => !c.IsDeleted).OrderByDescending(c => c.CheckTime).Take(1))
             .ToArrayAsync();
     }
 }

@@ -1,13 +1,12 @@
 ﻿using UrfuPassSystem.App.Components;
-using UrfuPassSystem.App.ArchiveHandler;
-using UrfuPassSystem.App.StudentHandler;
-using UrfuPassSystem.App.ImageHandler;
 using Microsoft.EntityFrameworkCore;
 using UrfuPassSystem.Domain.Services;
 using UrfuPassSystem.Infrastructure.ImageStorage;
 using UrfuPassSystem.Infrastructure.ImageProcessor;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
+using UrfuPassSystem.Domain.Services.ImageHandler;
+using UrfuPassSystem.Infrastructure.ArchiveHandler;
 
 if (!Directory.Exists("images"))
     Directory.CreateDirectory("images");
@@ -31,13 +30,14 @@ else
             ?? throw new InvalidOperationException("Connection string 'database' not found.")));
 }
 
+builder.Services.AddSingleton<IArchiveHandler, ArchiveHandler>();
+
+builder.Services.Configure<ImageProcessorOptions>(builder.Configuration.GetSection("ImageProcessor"));
+builder.Services.AddSingleton<IImageProcessor, ImageProcessor>();
+
 builder.Services.Configure<ImageStorageOptions>(builder.Configuration.GetSection("ImageStorage"));
 builder.Services.AddSingleton<IImageStorage, ImageStorage>();
 
-builder.Services.Configure<ImageProcessorOptions>(builder.Configuration.GetSection("ImageProcessor"));
-builder.Services.AddSingleton<IArchiveHandler, ArchiveHandler>();
-builder.Services.AddScoped<IStudentHandler, StudentHandler>();
-builder.Services.AddSingleton<IImageProcessor, ImageProcessor>();
 builder.Services.AddScoped<IImageHandler, ImageHandler>();
 
 var app = builder.Build();
@@ -74,6 +74,12 @@ app.UseStaticFiles(new StaticFileOptions
     FileProvider = new PhysicalFileProvider(
         Path.Combine(app.Environment.ContentRootPath, "images")),
     RequestPath = "/images"
+});
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(app.Environment.ContentRootPath, "temp")),
+    RequestPath = "/temp"
 });
 
 app.UseAntiforgery();

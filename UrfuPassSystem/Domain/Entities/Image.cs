@@ -5,8 +5,9 @@ namespace UrfuPassSystem.Domain.Entities;
 /// <summary>Сущность фотографии, отправленной студентом.</summary>
 public class Image : Entity
 {
-    /// <summary>Номер студенческого билета студента, который отправил фотографию.</summary>
-    public required string StudentCardId { get; init; }
+    /// <summary>Номер студенческого билета студента, который отправил фотографию.
+    /// null, если фотография была загружена сотрудником.</summary>
+    public required string? StudentCardId { get; init; }
     /// <summary>Время отправки фотографии студентом.</summary>
     public required DateTime SentTime { get; init; }
     /// <summary>Изначальное название файла фотографии (с расширением).</summary>

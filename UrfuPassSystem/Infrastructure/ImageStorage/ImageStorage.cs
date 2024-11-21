@@ -18,6 +18,7 @@ public class ImageStorage : IImageStorage
     public ITempFolger CreateTempFolger()
     {
         var path = RandomTempFolgerPath();
+        Directory.CreateDirectory(path);
         return new TempFolger(path);
     }
 

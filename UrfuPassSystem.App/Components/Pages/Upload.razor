@@ -1,12 +1,15 @@
-﻿@using UrfuPassSystem.App.ArchiveHandler
-@using UrfuPassSystem.App.ImageHandler
-@using UrfuPassSystem.Domain.Entities
+﻿@using UrfuPassSystem.Domain.Services
+@using UrfuPassSystem.Domain.Services.ImageHandler
+@using UrfuPassSystem.Infrastructure.ArchiveHandler
+@using UrfuPassSystem.Infrastructure.ImageStorage
 
 @page "/upload"
 @rendermode InteractiveServer
-@inject ILogger<Upload> Logger
 @inject IArchiveHandler ArchiveHandler
+@inject IImageStorage ImageStorage
 @inject IImageHandler ImageHandler
+@inject ApplicationDbContext DbContext
+@inject ILogger<Upload> Logger
 
 <PageTitle>Загрузить</PageTitle>
 
@@ -41,16 +44,22 @@
     public string FileName { get; set; } = "";
     public long FileSize { get; set; }
     public string FileType { get; set; } = "";
-    public string? FilePath { get; set; }
     public string? Preview { get; set; }
     public string ErrorMessage { get; set; } = "";
+
+    public ITempFolger? TempFolger { get; set; }
+    public string? FilePath{ get; set; }
 
     const int MAX_FILESIZE = 100 * 1024 * 1024; // 100 MB
 
     public async Task FileUploaded(InputFileChangeEventArgs e)
     {
-        if (FilePath != null)
-            File.Delete(FilePath);
+        if (TempFolger != null)
+        {
+            TempFolger.Dispose();
+            TempFolger = null;
+            FilePath = null;
+        }
 
         var file = e.File;
         if (file is null)
@@ -68,83 +77,80 @@
         {
             ErrorMessage = "Недопустимый тип файла. Разрешены только .jpg, .jpeg, .png, .jfif, .heic, .zip, .rar.";
             Preview = string.Empty;
-            FilePath = null;
             return;
         }
 
         ErrorMessage = "";
 
-        if (FileType.StartsWith("image"))
-        {
-            var buffer = new byte[FileSize];
-            await file.OpenReadStream(MAX_FILESIZE).ReadAsync(buffer);
-            Preview = $"data:{FileType};base64,{Convert.ToBase64String(buffer)}";
-        }
-        else
-            Preview = string.Empty;
+        TempFolger = ImageStorage.CreateTempFolger();
+        FilePath = Path.Combine(TempFolger.Path, FileName);
 
-        var path = Path.GetFullPath(Path.Combine("images/temp", FileName));
-
-        FilePath = path;
-
-        await using var destinationStream = new FileStream(path, FileMode.Create);
+        await using var destinationStream = new FileStream(FilePath, FileMode.Create);
         await file.OpenReadStream(MAX_FILESIZE).CopyToAsync(destinationStream);
+
+        if (FileType.StartsWith("image"))
+            Preview = FilePath;
+        else
+            Preview = null;
     }
 
     private async Task StartProcess(MouseEventArgs e)
     {
-        if (FilePath == null)
-            return;
-
-        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".jfif", ".heic" };
-
-        if (FileType.Contains("zip") || FileType.Contains("rar"))
+        if (TempFolger == null)
         {
-            var randomFileName = Path.GetRandomFileName();
-            var path = Path.GetFullPath(Path.Combine("images/temp", randomFileName));
-            await ArchiveHandler.ExtractArchive(FilePath, path);
+            ErrorMessage = "Файл не выбран";
+            return;
+        }
+        try
+        {
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".jfif", ".heic" };
 
-            var files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
-            foreach (var file in files)
+            if (FileType.Contains("zip") || FileType.Contains("rar"))
             {
-                var fileExtension = Path.GetExtension(file).ToLower();
+                var randomFileName = Path.GetRandomFileName();
+                var path = Path.GetFullPath(Path.Combine(TempFolger.Path, randomFileName));
+                await ArchiveHandler.ExtractArchive(FilePath!, path);
+
+                var files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
+                foreach (var file in files)
+                {
+                    var fileExtension = Path.GetExtension(file).ToLower();
+                    if (!allowedExtensions.Contains(fileExtension))
+                    {
+                        ErrorMessage = $"Архив содержит недопустимый файл: {Path.GetFileName(file)}";
+                        return;
+                    }
+                }
+
+                foreach (var file in files)
+                    await SaveImage(file);
+            }
+            else
+            {
+                var fileExtension = Path.GetExtension(FilePath!).ToLower();
                 if (!allowedExtensions.Contains(fileExtension))
                 {
-                    ErrorMessage = $"Архив содержит недопустимый файл: {Path.GetFileName(file)}";
-                    Directory.Delete(path, true);
+                    ErrorMessage = "Недопустимый тип файла.";
                     return;
                 }
+                await SaveImage(FilePath!);
             }
-
-            foreach (var file in files)
-            {
-                await SaveImage(file);
-                File.Delete(file);
-            }
-            Directory.Delete(path, true);
+            Preview = null;
+            FileName = "";
+            FileSize = 0;
+            FileType = "";
+            ErrorMessage = "";
         }
-        else
+        finally
         {
-            var fileExtension = Path.GetExtension(FilePath).ToLower();
-            if (!allowedExtensions.Contains(fileExtension))
-            {
-                ErrorMessage = "Недопустимый тип файла.";
-                return;
-            }
-            await SaveImage(FilePath);
+            TempFolger.Dispose();
+            TempFolger = null;
+            FilePath = null;
         }
-
-        File.Delete(FilePath);
-        Preview = null;
-        FilePath = null;
-        FileName = "";
-        FileSize = 0;
-        FileType = "";
-        ErrorMessage = "";
     }
 
     private async Task SaveImage(string imagePath)
     {
-        await ImageHandler.SaveImage(imagePath);
+        await ImageHandler.SaveAndCheckImage(DbContext, imagePath);
     }
 }

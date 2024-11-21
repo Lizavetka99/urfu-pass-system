@@ -37,7 +37,7 @@ else
                     <td>@check.Image.StudentCardId</td>
                     <td><img height="50" src="@check.FilePath" /></td>
                     <td>@check.IsSuccess</td>
-                    <td><button type="button" class="btn btn-danger" @onclick="() => Delete(check)">Удалить</button></td>
+                    <td><button type="button" class="btn btn-danger" @onclick="() => Cancel(check)">Отменить</button></td>
                 </tr>
             }
         </tbody>
@@ -54,7 +54,7 @@ else
             .ToListAsync();
     }
 
-    private async Task Delete(ImageCheck imageCheck)
+    private async Task Cancel(ImageCheck imageCheck)
     {
         imageCheck.MarkDeleted();
         imageChecks?.Remove(imageCheck);
