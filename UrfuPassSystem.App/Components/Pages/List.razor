@@ -8,8 +8,6 @@
 
     <PageTitle>Список фото</PageTitle>
 
-    <h1>Список фото</h1>
-
     @if (images == null)
     {
         <p><em>Загрузка...</em></p>
@@ -23,6 +21,15 @@
                 <i class="bi bi-search"></i>
             </button>
         </form>
+        
+        <!-- Форма с 4 кнопками: Скачать Проверить Показывать только... Сортировать по -->
+        <form action="" method="get" class="button-form">
+            <button type="submit" class="list-button">Скачать</button>
+            <button type="submit" class="list-button">Проверить</button>
+            <button type="submit" class="list-button">Проверено деканатом</button>
+            <button type="submit" class="list-button">Сортировать по</button>
+        </form>
+        
         <table class="table">
             <thead>
                 <tr>
