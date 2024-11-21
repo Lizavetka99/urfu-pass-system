@@ -2,44 +2,51 @@
 @using UrfuPassSystem.Domain.Entities
 @using UrfuPassSystem.Domain.Services
 
-@page "/list"
-@attribute [StreamRendering]
-@inject ApplicationDbContext Database
+    @page "/list"
+    @attribute [StreamRendering]
+    @inject ApplicationDbContext Database
 
-<PageTitle>Список фото</PageTitle>
+    <PageTitle>Список фото</PageTitle>
 
-<h1>Список фото</h1>
+    <h1>Список фото</h1>
 
-@if (images == null)
-{
-    <p><em>Загрузка...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Время отправки</th>
-                <th>Номер студенческого</th>
-                <th>Название файла</th>
-                <th>Превью</th>
-                <th>Статус проверки</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var image in images)
-            {
+    @if (images == null)
+    {
+        <p><em>Загрузка...</em></p>
+    }
+    else
+    {
+        <!-- Форма для поиска -->
+        <form action="" method="get">
+            <input name="s" placeholder="Искать здесь..." type="search">
+            <button type="submit">
+                <i class="bi bi-search"></i>
+            </button>
+        </form>
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>@image.SentTime.ToString()</td>
-                    <td>@image.StudentCardId</td>
-                    <td>@image.OriginalFileName</td>
-                    <td><img height="50" src="@image.FilePath" /></td>
-                    <td>@image.Checks?.SingleOrDefault()?.IsSuccess</td>
+                    <th>Время отправки</th>
+                    <th>Номер студенческого</th>
+                    <th>Название файла</th>
+                    <th>Превью</th>
+                    <th>Статус проверки</th>
                 </tr>
-            }
-        </tbody>
-    </table>
-}
+            </thead>
+            <tbody>
+                @foreach (var image in images)
+                {
+                    <tr>
+                        <td>@image.SentTime.ToString()</td>
+                        <td>@image.StudentCardId</td>
+                        <td>@image.OriginalFileName</td>
+                        <td><img height="50" src="@image.FilePath" /></td>
+                        <td>@image.Checks?.SingleOrDefault()?.IsSuccess</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
 
 @code {
     private Image[]? images;
