@@ -32,24 +32,50 @@
         
         <table class="table">
             <thead>
-                <tr>
-                    <th>Время отправки</th>
-                    <th>Номер студенческого</th>
-                    <th>Название файла</th>
-                    <th>Превью</th>
-                    <th>Статус проверки</th>
-                </tr>
-            </thead>
+                    <tr>
+                        <th>Фото</th>
+                        <th>Фамилия</th>
+                        <th>Имя</th>
+                        <th>Отчество</th>
+                        <th>Группа</th>
+                        <th>Институт</th>
+                        <th>Дата загрузки</th>
+                        <th>Номер студенческого</th>
+                        <th>Почта</th>
+                        <th>Нейросеть</th>
+                        <th>Деканат</th>
+                        <th>Бюро</th>
+                    </tr>
+                    </thead>
             <tbody>
                 @foreach (var image in images)
                 {
                     <tr>
-                        <td>@image.SentTime.ToString()</td>
-                        <td>@image.StudentCardId</td>
-                        <td>@image.OriginalFileName</td>
+                        <!-- Фото -->
                         <td><img height="50" src="@image.FilePath" /></td>
+                        <!-- Фамилия -->
+                        <td></td>
+                        <!-- Имя -->
+                        <td></td>
+                        <!-- Отчество -->
+                        <td></td>
+                        <!-- Группа -->
+                        <td></td>
+                        <!-- Институт -->
+                        <td></td>
+                        <!-- Дата загрузки -->
+                        <td>@image.SentTime.ToString()</td>
+                        <!-- Номер студенческого -->
+                        <td>@image.StudentCardId</td>
+                        <!-- Почта -->
+                        <td></td>
+                        <!-- Статус проверки Нейронка-->
+                        <td></td>
+                        <!-- Статус проверки Деканат-->
+                        <td>aaaaaaaaaaaaaaaaaaaa</td>
+                        <!-- Статус проверки Бюро-->
                         <td>@image.Checks?.SingleOrDefault()?.IsSuccess</td>
-                    </tr>
+                     </tr>
                 }
             </tbody>
         </table>
