@@ -2,7 +2,7 @@ form {
     display: flex;
     align-items: center;
     max-width: 100%;
-    margin: 20px auto;
+    margin: 50px auto;
     padding: 0;
 }
 input {
@@ -56,25 +56,36 @@ table {
     table-layout: auto;
     width: 100%;
     border-collapse: collapse;
+    margin: 50px 0;
     overflow-x: auto; /* Добавляем горизонтальную прокрутку, если содержимое не помещается */
     overflow-y: auto; /* Добавляем вертикальную прокрутку, если содержимое не помещается */
     max-height: 100px; /* Максимальная высота контейнера для вертикальной прокрутки */
     border: 1px solid #ccc; /* Граница контейнера */
+    font-size: 16px;
+    font-family: Arial, sans-serif;
 }
 
 th, td {
-    padding: 8px;
+    padding: 12px 15px;
     text-align: center; /* Выравнивание текста влево */
     border-right: 1px solid #ccc;
     overflow: auto;
     white-space: nowrap;
 }
 
-thead {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
-    color: white;
+thead{
+    background-color: #f4f4fc;
 }
 
+th {
+    font-weight: bold; 
+}
+
+/* Чередование цветов строк */
 tbody tr:nth-child(even) {
-    background-color: #f9f9f9; /* Задний фон для чётных строк */
+    background-color: #f4f4fc; /* Светло-серый цвет для чётных строк */
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #fff; /* Белый цвет для нечётных строк */
 }
