@@ -12,7 +12,7 @@
 
 <PageTitle>Проверка фотографий</PageTitle>
 
-<h1>Проверка фотографий</h1>
+
  
 @if (image == null)
 {
@@ -20,23 +20,41 @@
 }
 else
 {
+    <div class="image-name">Название фотографии: @image.OriginalFileName</div>
     <div class="container">
         <div class="row">
+            <!-- Стрелка влево -->
             <div class="col">
-                <img height="300" src="@PreviewRaw" />
+                <button class="btn">
+                    <i class="bi bi-arrow-left "></i>
+                </button>
             </div>
+            <!-- Обработанное фото -->
             <div class="col">
-                <img height="300" src="@PreviewProcessed" />
+                <img height="300" src="@PreviewRaw"/>
+                <p>Обработанное фото</p>
+            </div>
+            <!-- Изначальное фото -->
+            <div class="col">
+                <img height="300" src="@PreviewRaw"/>
+                <p>Изначальное фото</p>
+            </div>  
+            <!-- Стрелка вправо -->
+            <div class="col">
+                <button class="btn">
+                    <i class="bi bi-arrow-right "></i>
+                </button>
             </div>
         </div>
-        <hr/>
         <div class="row">
+            <div class="col"></div>
             <div class="col">
-                <button type="button" class="btn btn-primary" @onclick="Success">Ок</button>
+                <button type="button" class="btn-success" @onclick="Success">Подтвердить</button>
             </div>
             <div class="col">
-                <button type="button" class="btn btn-primary" @onclick="NotSuccess">Не ок</button>
+                <button type="button" class="btn-success" @onclick="NotSuccess">Фото не подходит</button>
             </div>
+            <div class="col"></div>
         </div>
     </div>
 }
