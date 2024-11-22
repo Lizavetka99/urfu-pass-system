@@ -1,9 +1,11 @@
 form {
     display: flex;
     align-items: center;
-    max-width: 100%;
+    width: auto;
     margin: 50px auto;
     padding: 0;
+    flex: 1;
+    border-collapse: collapse;
 }
 input {
     flex: 1;
@@ -55,6 +57,7 @@ button:hover {
 table {
     table-layout: auto;
     width: 100%;
+    flex: 1;
     border-collapse: collapse;
     margin: 50px 0;
     overflow-x: auto; /* Добавляем горизонтальную прокрутку, если содержимое не помещается */
