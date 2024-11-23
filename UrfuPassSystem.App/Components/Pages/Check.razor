@@ -34,21 +34,25 @@ else
             <div class="col d-flex justify-content-around">
                 <!-- Обработанное фото с кнопкой -->
                 <div class="photo-container">
+                    <p>Обработанное фото</p>
                     <button type="button" class="btn-download">
                         <i class="bi bi-download"></i>
                     </button>
-                    <img height="300" src="@PreviewRaw  " />
-                    <p>Обработанное фото</p>
+
+                    <img height="300" src="@PreviewRaw  "/>
+
                     <button type="button" class="btn-success" @onclick="Success">Подтвердить</button>
                 </div>
 
                 <!-- Изначальное фото с кнопкой -->
                 <div class="photo-container">
+                    <p>Изначальное фото</p>
                     <button type="button" class="btn-download">
                         <i class="bi bi-download"></i>
                     </button>
-                    <img height="300" src="@PreviewRaw" />
-                    <p>Изначальное фото</p>
+
+                    <img height="300" src="@PreviewRaw"/>
+
                     <button type="button" class="btn-danger" @onclick="NotSuccess">Фото не подходит</button>
                 </div>
             </div>
