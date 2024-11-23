@@ -22,30 +22,43 @@ else
 {
     <div class="image-name">Название фотографии: @image.OriginalFileName</div>
     <div class="container">
-        <div class="row">
+        <div class="row align-items-center">
             <!-- Стрелка влево -->
-            <div class="col">
-                <button class="btn">
-                    <i class="bi bi-arrow-left "></i>
+            <div class="col-auto">
+                <button class="btn btn-arrow">
+                    <i class="bi bi-arrow-left"></i>
                 </button>
             </div>
-            <!-- Обработанное фото -->
-            <div class="col">
-                <img height="300" src="@PreviewRaw"/>
-                <p>Обработанное фото</p>
+
+            <!-- Фотографии -->
+            <div class="col d-flex justify-content-around">
+                <!-- Обработанное фото -->
+                <div class="photo-container">
+                    <button type="button" class="btn-upload">
+                        <i class="bi bi-upload"></i>
+                    </button>
+                    <img height="300" src="@PreviewRaw" />
+                    <p>Обработанное фото</p>
+                </div>
+
+                <!-- Изначальное фото -->
+                <div class="photo-container">
+                    <button type="button" class="btn-upload">
+                        <i class="bi bi-upload"></i>
+                    </button>
+                    <img height="300" src="@PreviewRaw" />
+                    <p>Изначальное фото</p>
+                </div>
             </div>
-            <!-- Изначальное фото -->
-            <div class="col">
-                <img height="300" src="@PreviewRaw"/>
-                <p>Изначальное фото</p>
-            </div>  
+
             <!-- Стрелка вправо -->
-            <div class="col">
-                <button class="btn">
-                    <i class="bi bi-arrow-right "></i>
+            <div class="col-auto">
+                <button class="btn btn-arrow">
+                    <i class="bi bi-arrow-right"></i>
                 </button>
             </div>
         </div>
+
         <div class="row">
             <div class="col"></div>
             <div class="col">
@@ -57,6 +70,8 @@ else
             <div class="col"></div>
         </div>
     </div>
+
+
 }
 
 @code {
