@@ -103,20 +103,23 @@
             var randomFileName = Path.GetRandomFileName();
             var path = Path.GetFullPath(Path.Combine("images/temp", randomFileName));
             await ArchiveHandler.ExtractArchive(FilePath, path);
-
+            
             var files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
+            var allowedFiles = new List<string>();
             foreach (var file in files)
             {
                 var fileExtension = Path.GetExtension(file).ToLower();
                 if (!allowedExtensions.Contains(fileExtension))
                 {
                     ErrorMessage = $"Архив содержит недопустимый файл: {Path.GetFileName(file)}";
-                    Directory.Delete(path, true);
-                    return;
+                }
+                else
+                {
+                    allowedFiles.Add(file);   
                 }
             }
 
-            foreach (var file in files)
+            foreach (var file in allowedFiles)
             {
                 await SaveImage(file);
                 File.Delete(file);
