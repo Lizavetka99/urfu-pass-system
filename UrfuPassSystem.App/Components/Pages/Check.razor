@@ -30,24 +30,26 @@ else
                 </button>
             </div>
 
-            <!-- Фотографии -->
+            <!-- Фотографии с кнопками -->
             <div class="col d-flex justify-content-around">
-                <!-- Обработанное фото -->
+                <!-- Обработанное фото с кнопкой -->
                 <div class="photo-container">
                     <button type="button" class="btn-upload">
                         <i class="bi bi-upload"></i>
                     </button>
-                    <img height="300" src="@PreviewRaw" />
+                    <img height="300" src="@PreviewRaw  " />
                     <p>Обработанное фото</p>
+                    <button type="button" class="btn-success" @onclick="Success">Подтвердить</button>
                 </div>
 
-                <!-- Изначальное фото -->
+                <!-- Изначальное фото с кнопкой -->
                 <div class="photo-container">
                     <button type="button" class="btn-upload">
                         <i class="bi bi-upload"></i>
                     </button>
                     <img height="300" src="@PreviewRaw" />
                     <p>Изначальное фото</p>
+                    <button type="button" class="btn-danger" @onclick="NotSuccess">Фото не подходит</button>
                 </div>
             </div>
 
@@ -58,19 +60,7 @@ else
                 </button>
             </div>
         </div>
-
-        <div class="row">
-            <div class="col"></div>
-            <div class="col">
-                <button type="button" class="btn-success" @onclick="Success">Подтвердить</button>
-            </div>
-            <div class="col">
-                <button type="button" class="btn-success" @onclick="NotSuccess">Фото не подходит</button>
-            </div>
-            <div class="col"></div>
-        </div>
     </div>
-
 
 }
 
