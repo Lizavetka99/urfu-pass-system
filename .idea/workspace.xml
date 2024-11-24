@@ -6,23 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="5dbcbf6a-26f0-43cc-879d-a218f0e47daa" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/imageHandler/1 (1).jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/imageHandler/Tests/3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/imageHandler/Tests/images.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/imageHandler/Tests/liza.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/imageHandler/Tests/orel.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/imageHandler/Tests/r.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/imageHandler/Tests_1/3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/imageHandler/blur_checker.py" beforeDir="false" afterPath="$PROJECT_DIR$/imageHandler/blur_checker.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/imageHandler/cut.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/imageHandler/face_recognizer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imageHandler/RunImageHandler.py" beforeDir="false" afterPath="$PROJECT_DIR$/imageHandler/RunImageHandler.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/imageHandler/imageHandler.py" beforeDir="false" afterPath="$PROJECT_DIR$/imageHandler/imageHandler.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/imageHandler/image_cutter.py" beforeDir="false" afterPath="$PROJECT_DIR$/imageHandler/image_cutter.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/imageHandler/image_rotator.py" beforeDir="false" afterPath="$PROJECT_DIR$/imageHandler/image_rotator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/imageHandler/new_cut.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/imageHandler/new_img.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/imageHandler/weights/deploy.prototxt.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/imageHandler/weights/res10_300x300_ssd_iter_140000.caffemodel" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,20 +37,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "photo-editor",
-    "last_opened_file_path": "C:/Users/ASUS/Desktop/Python/Urfu Pass System/urfu-pass-system",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;photo-editor&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/ASUS/Desktop/Python/DM&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Python.RunImageHandler">
     <configuration name="AgainTest" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="urfu-pass-system" />
@@ -128,6 +115,27 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="esting" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="urfu-pass-system" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/imageHandler" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/imageHandler/esting.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="imageHandler" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="urfu-pass-system" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -152,6 +160,7 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.RunImageHandler" />
+        <item itemvalue="Python.esting" />
         <item itemvalue="Python.imageHandler" />
         <item itemvalue="Python.AgainTest" />
         <item itemvalue="Python.Testing" />
