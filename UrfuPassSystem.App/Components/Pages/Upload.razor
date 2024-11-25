@@ -112,17 +112,19 @@
                 await ArchiveHandler.ExtractArchive(FilePath!, path);
 
                 var files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
+                var availableFiles = new List<string>();
                 foreach (var file in files)
                 {
                     var fileExtension = Path.GetExtension(file).ToLower();
                     if (!allowedExtensions.Contains(fileExtension))
                     {
                         ErrorMessage = $"Архив содержит недопустимый файл: {Path.GetFileName(file)}";
-                        return;
                     }
+                    else
+                        availableFiles.Add(file);
                 }
 
-                foreach (var file in files)
+                foreach (var file in availableFiles)
                     await SaveImage(file);
             }
             else
