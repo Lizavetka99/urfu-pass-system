@@ -1,16 +1,23 @@
-import face_recognizer
-import cv2
+import cv2, face_square_recogniser
 
 class ImageRotator:
+    def get_pixel_average(self, pixel):
+        return sum(pixel) / len(pixel)
+
     def rotate(self, image):
-        start_x, start_y, width, height = face_recognizer.FaceRecognizer()\
-            .get_face_rectangle(image)
-        rotated_image = image
-        if (width / height) >= 1.2:
-            if start_x >= width / 3:
-                rotated_image = cv2.rotate(image,
-                                           cv2.ROTATE_90_COUNTERCLOCKWISE)
-            else:
-                rotated_image = cv2.rotate(image,
-                                           cv2.ROTATE_90_CLOCKWISE)
-        return rotated_image
+        height, width = image.shape[0], image.shape[1]
+        right_cof, left_cof, top_cof, bottom_cof = 0, 0, 0, 0
+        for x in range(width):
+            top_cof += self.get_pixel_average(image[3, x])
+            bottom_cof += self.get_pixel_average(image[height - 4, x])
+        for y in range(height):
+            right_cof += self.get_pixel_average(image[y, width - 4])
+            left_cof += self.get_pixel_average(image[y, 3])
+        min_cof = min(top_cof, left_cof, right_cof, bottom_cof)
+        if (top_cof == min_cof):
+            return cv2.rotate(image, cv2.ROTATE_180)
+        elif (right_cof == min_cof):
+            return cv2.rotate(image, cv2.ROTATE_90_CLOCKWISE)
+        elif (left_cof == min_cof):
+            return cv2.rotate(image, cv2.ROTATE_90_COUNTERCLOCKWISE)
+        return image
