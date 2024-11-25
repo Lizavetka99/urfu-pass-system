@@ -2,44 +2,84 @@
 @using UrfuPassSystem.Domain.Entities
 @using UrfuPassSystem.Domain.Services
 
-@page "/list"
-@attribute [StreamRendering]
-@inject ApplicationDbContext Database
+    @page "/list"
+    @attribute [StreamRendering]
+    @inject ApplicationDbContext Database
 
-<PageTitle>Изображения</PageTitle>
+    <PageTitle>Список фото</PageTitle>
 
-<h1>Изображения</h1>
-
-@if (images == null)
-{
-    <p><em>Загрузка...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Время отправки</th>
-                <th>Номер студенческого</th>
-                <th>Название файла</th>
-                <th>Превью</th>
-                <th>Статус проверки</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var image in images)
-            {
-                <tr>
-                    <td>@image.SentTime.ToString()</td>
-                    <td>@image.StudentCardId</td>
-                    <td>@image.OriginalFileName</td>
-                    <td><img height="50" src="@image.FilePath" /></td>
-                    <td>@image.Checks?.SingleOrDefault()?.IsSuccess</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+    @if (images == null)
+    {
+        <p><em>Загрузка...</em></p>
+    }
+    else
+    {
+        <!-- Форма для поиска -->
+        <form action="" method="get">
+            <input name="s" placeholder="Искать здесь..." type="search">
+            <button type="submit">
+                <i class="bi bi-search"></i>
+            </button>
+        </form>
+        
+        <!-- Форма с 4 кнопками: Скачать Проверить Показывать только... Сортировать по -->
+        <form action="" method="get" class="button-form">
+            <button type="submit" class="list-button">Скачать</button>
+            <button type="submit" class="list-button">Проверить</button>
+            <button type="submit" class="list-button">Проверено деканатом</button>
+            <button type="submit" class="list-button">Сортировать по</button>
+        </form>
+        
+        <table class="table">
+            <thead>
+                    <tr>
+                        <th>Фото</th>
+                        <th>Фамилия</th>
+                        <th>Имя</th>
+                        <th>Отчество</th>
+                        <th>Группа</th>
+                        <th>Институт</th>
+                        <th>Дата загрузки</th>
+                        <th>Номер студенческого</th>
+                        <th>Почта</th>
+                        <th>Нейросеть</th>
+                        <th>Деканат</th>
+                        <th>Бюро</th>
+                    </tr>
+                    </thead>
+            <tbody>
+                @foreach (var image in images)
+                {
+                    <tr>
+                        <!-- Фото -->
+                        <td><img height="50" src="@image.FilePath" /></td>
+                        <!-- Фамилия -->
+                        <td></td>
+                        <!-- Имя -->
+                        <td></td>
+                        <!-- Отчество -->
+                        <td></td>
+                        <!-- Группа -->
+                        <td></td>
+                        <!-- Институт -->
+                        <td></td>
+                        <!-- Дата загрузки -->
+                        <td>@image.SentTime.ToString()</td>
+                        <!-- Номер студенческого -->
+                        <td>@image.StudentCardId</td>
+                        <!-- Почта -->
+                        <td></td>
+                        <!-- Статус проверки Нейронка-->
+                        <td></td>
+                        <!-- Статус проверки Деканат-->
+                        <td></td>
+                        <!-- Статус проверки Бюро-->
+                        <td>@image.Checks?.SingleOrDefault()?.IsSuccess</td>
+                     </tr>
+                }
+            </tbody>
+        </table>
+    }
 
 @code {
     private Image[]? images;

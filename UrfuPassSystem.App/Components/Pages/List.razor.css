@@ -1,0 +1,94 @@
+form {
+    display: flex;
+    align-items: center;
+    width: auto;
+    margin: 50px auto;
+    padding: 0;
+    flex: 1;
+    border-collapse: collapse;
+}
+input {
+    flex: 1;
+    height: 50px;
+    padding: 0 20px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 25px 0 0 25px;
+    outline: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+button {
+    height: 50px;
+    padding: 0 25px;
+    border: none;
+    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 0 25px 25px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+button:hover {
+    background-image: linear-gradient(180deg, rgb(26, 77, 175) 0%, #3a0647 70%);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.list-button {
+    flex: 1;
+    max-width: 300px;
+    border-radius: 25px;
+    padding: 10px 15px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.button-form {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 100%;
+    padding: 0 20px;
+    gap: 10px;
+}
+
+
+
+table {
+    table-layout: auto;
+    width: 100%;
+    flex: 1;
+    border-collapse: collapse;
+    margin: 50px 0;
+    overflow-x: auto; /* Добавляем горизонтальную прокрутку, если содержимое не помещается */
+    overflow-y: auto; /* Добавляем вертикальную прокрутку, если содержимое не помещается */
+    max-height: 100px; /* Максимальная высота контейнера для вертикальной прокрутки */
+    border: 1px solid #ccc; /* Граница контейнера */
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: center; /* Выравнивание текста влево */
+    border-right: 1px solid #ccc;
+    overflow: auto;
+    white-space: nowrap;
+}
+
+thead{
+    background-color: #f4f4fc;
+}
+
+th {
+    font-weight: bold; 
+}
+
+/* Чередование цветов строк */
+tbody tr:nth-child(even) {
+    background-color: #f4f4fc; /* Светло-серый цвет для чётных строк */
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #fff; /* Белый цвет для нечётных строк */
+}

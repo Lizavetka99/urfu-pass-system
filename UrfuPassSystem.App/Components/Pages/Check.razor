@@ -11,7 +11,7 @@
 
 <PageTitle>Проверка фотографий</PageTitle>
 
-<h1>Проверка фотографий</h1>
+
  
 @if (image == null)
 {
@@ -19,25 +19,56 @@
 }
 else
 {
+    <div class="image-name">Название фотографии: @image.OriginalFileName</div>
     <div class="container">
-        <div class="row">
-            <div class="col">
-                <img height="300" src="@PreviewRaw" />
+        <div class="row align-items-center">
+            <!-- Стрелка влево -->
+            <div class="col-auto">
+                <button class="btn btn-arrow">
+                    <i class="bi bi-arrow-left"></i>
+                </button>
             </div>
-            <div class="col">
-                <img height="300" src="@PreviewProcessed" />
+
+            <!-- Фотографии с кнопками -->
+            <div class="col d-flex justify-content-around">
+                <!-- Обработанное фото с кнопкой -->
+                <div class="photo-container">
+                    <p>Обработанное фото</p>
+                    <button type="button" class="btn-download">
+                        <i class="bi bi-download"></i>
+                    </button>
+
+                    <img height="300" src="@PreviewRaw  "/>
+
+                    <button type="button" class="btn-success" @onclick="Success">Подтвердить</button>
+                </div>
+
+                <!-- Изначальное фото с кнопкой -->
+                <div class="photo-container">
+                    <p>Изначальное фото</p>
+                    <button type="button" class="btn-download">
+                        <i class="bi bi-download"></i>
+                    </button>
+
+                    <img height="300" src="@PreviewRaw"/>
+
+                    <button type="button" class="btn-danger" @onclick="NotSuccess">Фото не подходит</button>
+                </div>
             </div>
-        </div>
-        <hr/>
-        <div class="row">
-            <div class="col">
-                <button type="button" class="btn btn-primary" @onclick="Success">Ок</button>
-            </div>
-            <div class="col">
-                <button type="button" class="btn btn-primary" @onclick="NotSuccess">Не ок</button>
+
+            <!-- Стрелка вправо -->
+            <div class="col-auto">
+                <button class="btn btn-arrow">
+                    <i class="bi bi-arrow-right"></i>
+                </button>
             </div>
         </div>
     </div>
+    
+    <div class="container">
+        <button class="btn">Вернуться к списку фото</button>
+    </div>
+
 }
 
 @code {
