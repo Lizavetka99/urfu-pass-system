@@ -6,10 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="5dbcbf6a-26f0-43cc-879d-a218f0e47daa" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/imageHandler/RunImageHandler.py" beforeDir="false" afterPath="$PROJECT_DIR$/imageHandler/RunImageHandler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/imageHandler/imageHandler.py" beforeDir="false" afterPath="$PROJECT_DIR$/imageHandler/imageHandler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/imageHandler/image_cutter.py" beforeDir="false" afterPath="$PROJECT_DIR$/imageHandler/image_cutter.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/imageHandler/image_rotator.py" beforeDir="false" afterPath="$PROJECT_DIR$/imageHandler/image_rotator.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -160,8 +156,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.RunImageHandler" />
-        <item itemvalue="Python.esting" />
         <item itemvalue="Python.imageHandler" />
+        <item itemvalue="Python.esting" />
         <item itemvalue="Python.AgainTest" />
         <item itemvalue="Python.Testing" />
       </list>
