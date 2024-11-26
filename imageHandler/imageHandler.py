@@ -43,13 +43,9 @@ class ImageHandler:
                 cv2.imwrite(output_file, edited_image, [cv2.IMWRITE_JPEG_QUALITY, 100])
             except ValueError as e:
                 raise ValueError(e.args[0])
-        else:
-            return -1
 
     def edit_images_folder(self, input_directory, output_directory):
         self.messages = dict()
-        if os.path.isfile(input_directory):
-            return -2
         if not os.path.exists(output_directory):
             os.makedirs(output_directory)
 
