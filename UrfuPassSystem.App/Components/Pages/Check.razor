@@ -63,7 +63,7 @@ else
     </div>
     
     <div class="container">
-        <button class="btn">Вернуться к списку фото</button>
+        <button class="btn" @onclick="NavigateToList">Вернуться к списку фото</button>
     </div>
 
 }
@@ -122,5 +122,12 @@ else
             PreviewProcessed = null;
         else
             PreviewProcessed = autoCheck.FilePath;
+    }
+    
+    [Inject] NavigationManager NavigationManager { get; set; }
+
+    private void NavigateToList()
+    {
+        NavigationManager.NavigateTo("list");
     }
 }
