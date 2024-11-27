@@ -35,9 +35,10 @@ public class ImageHandler(IImageStorage imageStorage, IImageProcessor processor,
         var check = new ImageCheck()
         {
             Image = image,
+            CheckTime = DateTime.UtcNow,
             IsAuto = true,
             IsEdited = true,
-            FilePath = processedPath,
+            FilePath = resultCode == ImageCheckResultCode.Success ? processedPath : originalPath,
             ResultCode = resultCode
         };
         dbContext.Images.Add(image);

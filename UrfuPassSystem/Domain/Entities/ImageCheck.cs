@@ -13,7 +13,7 @@ public class ImageCheck : Entity
     [DisallowNull]
     public required Image Image { get; init; }
     /// <summary>Время проверки.</summary>
-    public DateTime CheckTime { get; set; }
+    public required DateTime CheckTime { get; set; }
     /// <summary>Проверка автоматическая или ручная (true - автоматическая, false - ручная).</summary>
     public required bool IsAuto { get; init; }
     /// <summary>Id сотрудника, проводившего проверку, если проверка ручная (IsAuto == false).</summary>
