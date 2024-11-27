@@ -55,6 +55,20 @@ else
                         <InputFile OnChange="FileUploaded" />
                         <button type="button" class="btn btn-primary" @onclick="SaveImage">Обработать</button>
                         <button type="button" class="btn-secondary" @onclick="ChooseReason">Выбрать причину</button>
+                        @if (showReasons)
+                        {
+                            <div class="reasons-buttons">
+                                <button type="button" class="btn btn-primary" @onclick="(e) => OnReasonSelected(e, Reasons[1])">@Reasons[1]</button>
+                                <button type="button" class="btn btn-secondary" @onclick="(e) => OnReasonSelected(e, Reasons[2])">@Reasons[2]</button>
+                                <button type="button" class="btn btn-secondary" @onclick="(e) => OnReasonSelected(e, Reasons[3])">@Reasons[3]</button>
+                                <button type="button" class="btn btn-secondary" @onclick="(e) => OnReasonSelected(e, Reasons[4])">@Reasons[4]</button>
+                                <button type="button" class="btn btn-secondary" @onclick="(e) => OnReasonSelected(e, Reasons[5])">@Reasons[5]</button>
+                                <button type="button" class="btn btn-secondary" @onclick="(e) => OnReasonSelected(e, Reasons[6])">@Reasons[6]</button>
+                                <button type="button" class="btn btn-secondary" @onclick="(e) => OnReasonSelected(e, Reasons[7])">@Reasons[7]</button>
+                                <button type="button" class="btn btn-secondary" @onclick="(e) => OnReasonSelected(e, Reasons[8])">@Reasons[8]</button>
+                                <button type="button" class="btn btn-secondary" @onclick="(e) => OnReasonSelected(e, Reasons[9])">@Reasons[9]</button>
+                            </div>
+                        }
                     </div>
                 }
             </div>
@@ -65,15 +79,29 @@ else
 
 @code {
     public Image? image;
-
     public string? PreviewRaw { get; set; }
     public string? PreviewProcessed { get; set; }
+    public string? Reason { get; set; }
     private bool showAdditionalButtons = false;
+    private bool showReasons = false;
     private IBrowserFile changedFile { get; set; }
+
+    public Dictionary<int, string> Reasons = new()
+    {
+        {1, "Плохое качество изображения"},
+        {2, "Нет лица"},
+        {3, "Несколько лиц"},
+        {4, "Плохо обрезано"},
+        {5, "Не подходящий фон"},
+        {6, "Посторонние объекты на фото"},
+        {7, "Не подходящий внешний вид"},
+        {8, "Неправильное положение лица на фото"},
+        {9, "Другая причина"},
+    };
 
     private void ShowAdditionalOptions()
     {
-        showAdditionalButtons = true;
+        showAdditionalButtons = !showAdditionalButtons;
     }
     
     private async Task SaveImage()
@@ -82,25 +110,27 @@ else
         {
             PreviewProcessed = ImageStorage.CreateImageFile("jpg");
         }
+        Console.WriteLine(PreviewProcessed + " save image");
         await using var destinationStream = new FileStream(PreviewProcessed, FileMode.Create);
         await changedFile.OpenReadStream().CopyToAsync(destinationStream);
+        NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
     }
     
-    public async Task FileUploaded(InputFileChangeEventArgs e)
+    public Task FileUploaded(InputFileChangeEventArgs e)
     {
         changedFile = e.File;
-    }
-
-    private void ReplacePhoto()
-    {
-    // Логика для замены фотографии
-        Logger.LogInformation("Замена фотографии...");
+        return Task.CompletedTask;
     }
 
     private void ChooseReason()
     {
-    // Логика для выбора причины
-        Logger.LogInformation("Выбор причины...");
+        showReasons = !showReasons;
+    }
+    
+    private async void OnReasonSelected(MouseEventArgs e, string reason)
+    {
+        if (image != null) Reason = reason;
+        await NotSuccess(e);
     }
 
     protected override async Task OnInitializedAsync()
@@ -128,7 +158,7 @@ else
             CheckTime = DateTime.UtcNow,
             IsAuto = false,
             IsEdited = false,
-            FilePath = image.FilePath,
+            FilePath = PreviewProcessed ?? image.FilePath,
             ResultCode = isSuccess ? ImageCheckResultCode.Success : ImageCheckResultCode.UnexpectedError
         };
         await Database.ImageChecks.AddAsync(check);
@@ -140,15 +170,17 @@ else
     {
         image = await Database.Images
             .Include(i => i.Checks)
-            .Where(i => !i.Checks!.Any(c => !c.IsAuto && !c.IsDeleted)).FirstOrDefaultAsync();
+            .Where(i => !i.Checks!.Any(c => !c.IsAuto && !c.IsDeleted))
+            .FirstOrDefaultAsync();
         if (image == null)
             return;
 
         PreviewRaw = image.FilePath;
-
         var autoCheck = image.Checks?.FirstOrDefault(c => c.IsAuto);
         if (autoCheck == null || !File.Exists(autoCheck.FilePath))
-            PreviewProcessed = null;
+        {
+            PreviewProcessed = PreviewProcessed;
+        }
         else
             PreviewProcessed = autoCheck.FilePath;
     }
