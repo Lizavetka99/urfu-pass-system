@@ -62,6 +62,11 @@ public class ImageProcessor : IImageProcessor
         }
 
         var output = process.StandardOutput.ReadToEnd();
+        if (string.IsNullOrWhiteSpace(output))
+        {
+            _logger.LogWarning("Python processor didn't return code, consider it success.");
+            return ImageProcessorResultCode.Success;
+        }
         if (!int.TryParse(output, out var code)
             || !Enum.IsDefined((ImageProcessorResultCode)code))
         {
