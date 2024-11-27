@@ -21,51 +21,40 @@ else
 {
     <div class="image-name">Название фотографии: @image.OriginalFileName</div>
     <div class="container">
-        <div class="row align-items-center">
-            <!-- Стрелка влево -->
-            <div class="col-auto">
-                <button class="btn btn-arrow">
-                    <i class="bi bi-arrow-left"></i>
-                </button>
+    <div class="row align-items-center">
+        <!-- Фотографии с кнопками -->
+        <div class="col d-flex justify-content-around">
+            <!-- Обработанное фото с кнопкой -->
+            <!-- Обработанное фото с кнопкой -->
+            <div class="photo-container">
+                <p>Обработанное фото</p>
+                <a class="btn-download" href="@PreviewProcessed" download>
+                    <i class="bi bi-download"></i>
+                </a>
+                <img height="300" src="@PreviewProcessed" />
+                <button type="button" class="btn-success" @onclick="Success">Подтвердить</button>
             </div>
-
-            <!-- Фотографии с кнопками -->
-            <div class="col d-flex justify-content-around">
-                <!-- Обработанное фото с кнопкой -->
-                <!-- Обработанное фото с кнопкой -->
-                <div class="photo-container">
-                    <p>Обработанное фото</p>
-                    <a class="btn-download" href="@PreviewProcessed" download>
-                        <i class="bi bi-download"></i>
-                    </a>
-                    <img height="300" src="@PreviewProcessed" />
-                    <button type="button" class="btn-success" @onclick="Success">Подтвердить</button>
-                </div>
                 
-                <!-- Изначальное фото с кнопкой -->
-                <div class="photo-container">
-                    <p>Изначальное фото</p>
-                    <a class="btn-download" href="@PreviewRaw" download>
-                        <i class="bi bi-download"></i>
-                    </a>
-                    <img height="300" src="@PreviewRaw" />
-                    <button type="button" class="btn-danger" @onclick="NotSuccess">Фото не подходит</button>
-                </div>
-            </div>
+            <!-- Изначальное фото с кнопкой -->
+            <div class="photo-container">
+                <p>Изначальное фото</p>
+                <a class="btn-download" href="@PreviewRaw" download>
+                    <i class="bi bi-download"></i>
+                </a>
+                <img height="300" src="@PreviewRaw" />
+                <button type="button" class="btn-danger" @onclick="ShowAdditionalOptions">Фото не подходит</button>
 
-            <!-- Стрелка вправо -->
-            <div class="col-auto">
-                <button class="btn btn-arrow">
-                    <i class="bi bi-arrow-right"></i>
-                </button>
+                @if (showAdditionalButtons)
+                {
+                    <div class="additional-buttons">
+                        <button type="button" class="btn-secondary" @onclick="ReplacePhoto">Заменить на</button>
+                        <button type="button" class="btn-secondary" @onclick="ChooseReason">Выбрать причину</button>
+                    </div>
+                }
             </div>
         </div>
     </div>
-    
-    <div class="container">
-        <button class="btn" @onclick="NavigateToList">Вернуться к списку фото</button>
     </div>
-
 }
 
 @code {
@@ -73,6 +62,24 @@ else
 
     public string? PreviewRaw { get; set; }
     public string? PreviewProcessed { get; set; }
+    private bool showAdditionalButtons = false;
+
+    private void ShowAdditionalOptions()
+    {
+        showAdditionalButtons = true;
+    }
+
+    private void ReplacePhoto()
+    {
+    // Логика для замены фотографии
+        Logger.LogInformation("Замена фотографии...");
+    }
+
+    private void ChooseReason()
+    {
+    // Логика для выбора причины
+        Logger.LogInformation("Выбор причины...");
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -123,11 +130,13 @@ else
         else
             PreviewProcessed = autoCheck.FilePath;
     }
-    
-    [Inject] NavigationManager NavigationManager { get; set; }
+
+    [Inject]
+    NavigationManager NavigationManager { get; set; }
 
     private void NavigateToList()
     {
         NavigationManager.NavigateTo("list");
     }
+
 }
