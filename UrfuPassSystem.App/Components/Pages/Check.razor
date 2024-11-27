@@ -3,6 +3,11 @@
 @using UrfuPassSystem.Domain.Enums
 @using UrfuPassSystem.Domain.Services
 @using Microsoft.EntityFrameworkCore
+@inject IImageStorage ImageStorage
+@inject IImageHandler ImageHandler
+@inject ApplicationDbContext DbContext
+@using UrfuPassSystem.Domain.Services.ImageHandler
+@using UrfuPassSystem.Infrastructure.ImageStorage
 
 @page "/check"
 @rendermode InteractiveServer
@@ -47,7 +52,8 @@ else
                 @if (showAdditionalButtons)
                 {
                     <div class="additional-buttons">
-                        <button type="button" class="btn-secondary" @onclick="ReplacePhoto">Заменить на</button>
+                        <InputFile OnChange="FileUploaded" />
+                        <button type="button" class="btn btn-primary" @onclick="SaveImage">Обработать</button>
                         <button type="button" class="btn-secondary" @onclick="ChooseReason">Выбрать причину</button>
                     </div>
                 }
@@ -63,10 +69,26 @@ else
     public string? PreviewRaw { get; set; }
     public string? PreviewProcessed { get; set; }
     private bool showAdditionalButtons = false;
+    private IBrowserFile changedFile { get; set; }
 
     private void ShowAdditionalOptions()
     {
         showAdditionalButtons = true;
+    }
+    
+    private async Task SaveImage()
+    {
+        if (PreviewProcessed is null)
+        {
+            PreviewProcessed = ImageStorage.CreateImageFile("jpg");
+        }
+        await using var destinationStream = new FileStream(PreviewProcessed, FileMode.Create);
+        await changedFile.OpenReadStream().CopyToAsync(destinationStream);
+    }
+    
+    public async Task FileUploaded(InputFileChangeEventArgs e)
+    {
+        changedFile = e.File;
     }
 
     private void ReplacePhoto()
