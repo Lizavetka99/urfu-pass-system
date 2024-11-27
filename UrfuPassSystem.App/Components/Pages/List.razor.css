@@ -1,4 +1,4 @@
-form {
+.main-btns {
     display: flex;
     align-items: center;
     width: auto;
@@ -7,7 +7,7 @@ form {
     flex: 1;
     border-collapse: collapse;
 }
-input {
+/*input {
     flex: 1;
     height: 50px;
     padding: 0 20px;
@@ -16,7 +16,7 @@ input {
     border-radius: 25px 0 0 25px;
     outline: none;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
+}*/
 button {
     height: 50px;
     padding: 0 25px;
@@ -56,7 +56,7 @@ button:hover {
 
 table {
     table-layout: auto;
-    width: 100%;
+    width: 98%;
     flex: 1;
     border-collapse: collapse;
     margin: 50px 0;
@@ -84,11 +84,12 @@ th {
     font-weight: bold; 
 }
 
+
 /* Чередование цветов строк */
-tbody tr:nth-child(even) {
-    background-color: #f4f4fc; /* Светло-серый цвет для чётных строк */
-}
+/*tbody tr:nth-child(even) {
+    background-color: #f4f4fc;*/ /* Светло-серый цвет для чётных строк */
+/*}
 
 tbody tr:nth-child(odd) {
-    background-color: #fff; /* Белый цвет для нечётных строк */
-}
+    background-color: #fff;*/ /* Белый цвет для нечётных строк */
+/*}*/
