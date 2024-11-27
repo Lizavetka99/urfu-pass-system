@@ -9,6 +9,7 @@
 
 .container{
     margin-bottom: 50px;
+    margin-top: 50px;
 }
 
 .row {
@@ -102,4 +103,22 @@
 
 .btn-download:hover {
     background: linear-gradient(180deg, rgb(26, 77, 175) 0%, #3a0647 70%);
+}
+
+
+.additional-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.reasons-buttons{
+    display: flex;
+    flex-direction: column; 
+    gap: 15px;
+}
+
+.reasons-buttons button {
+    margin-bottom: 10px;
+    display: block;
 }
