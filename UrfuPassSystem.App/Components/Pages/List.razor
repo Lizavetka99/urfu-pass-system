@@ -41,8 +41,10 @@ else
         <button type="submit" class="list-button">Проверено деканатом</button>
         <button type="submit" class="list-button">Сортировать по</button>
     </form>-->
-    <div class="btn btn-primary" @onclick="SelectAll">@(_anySelected ? "Отменить выделение" : "Выбрать все")</div>
-    <div class="btn btn-primary" @onclick="Download" disabled>Скачать</div>
+    <div class="button-form">
+        <div class="button list-button" @onclick="SelectAll">@(_anySelected ? "Отменить выделение" : "Выбрать все")</div>
+        <div class="button list-button @(_anySelected ? "" : "disabled")" @onclick="Download">Скачать</div>
+    </div>
 
     <table class="table table-hover">
         <thead>
@@ -297,7 +299,7 @@ else
         if (_downloadInProgress)
             return;
         _selected.Clear();
-        _selectInverted = _anySelected = !_anySelected;
+        _selectInverted = _anySelected = !_anySelected && images?.Length > 0;
     }
 
     private void FilterKeyDown(KeyboardEventArgs e)
