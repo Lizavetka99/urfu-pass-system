@@ -54,10 +54,9 @@ else
                         <div class="additional-buttons">
                             <p>Заменить на:</p>
                             <InputFile OnChange="FileUploaded"/>
-                            @if (fileUploaded)
-                            {
-                                <button type="button" class="btn btn-primary" @onclick="SaveImage">Обработать</button>
-                            }
+                           
+                            <button type="button" class="btn btn-primary" @onclick="SaveImage">Обработать</button>
+                            
                             <button type="button" class="btn btn-secondary" @onclick="ChooseReason">Выбрать причину</button>
                             @if (showReasons)
                             {
@@ -94,7 +93,7 @@ else
     private bool showAdditionalButtons = false;
     private bool showReasons = false;
     private IBrowserFile changedFile { get; set; }
-    private bool fileUploaded;
+    private bool fileUploaded { get; set; }
 
     public Dictionary<int, string> Reasons = new()
     {
@@ -116,14 +115,16 @@ else
     
     private async Task SaveImage()
     {
-        if (PreviewProcessed is null)
-        {
-            PreviewProcessed = ImageStorage.CreateImageFile("jpg");
-        }
-        Console.WriteLine(PreviewProcessed + " save image");
-        await using var destinationStream = new FileStream(PreviewProcessed, FileMode.Create);
+        
+        
+        var newImage = ImageStorage.CreateImageFile("jpg");
+        Console.WriteLine(newImage + " save image");
+        await using var destinationStream = new FileStream(newImage, FileMode.Create);
         await changedFile.OpenReadStream().CopyToAsync(destinationStream);
-        NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+        PreviewProcessed = newImage;
+        //NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+        StateHasChanged();
+        
     }
     
     public Task FileUploaded(InputFileChangeEventArgs e)
