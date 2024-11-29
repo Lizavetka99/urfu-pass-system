@@ -153,12 +153,14 @@ else
 
     private async Task Success(MouseEventArgs e)
     {
+        NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
         var check = await CreateCheck(image!, true);
         await Update();
     }
 
     private async Task NotSuccess(MouseEventArgs e)
     {
+        NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
         var check = await CreateCheck(image!, false);
         await Update();
     }
