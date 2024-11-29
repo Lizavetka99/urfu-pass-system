@@ -22,8 +22,9 @@
 	</None>
   </ItemGroup>
 
+
   <ItemGroup>
-    <Folder Include="images\temp\" />
+    <Folder Include="images\" />
   </ItemGroup>
 
 </Project>

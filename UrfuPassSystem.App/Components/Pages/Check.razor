@@ -3,6 +3,11 @@
 @using UrfuPassSystem.Domain.Enums
 @using UrfuPassSystem.Domain.Services
 @using Microsoft.EntityFrameworkCore
+@inject IImageStorage ImageStorage
+@inject IImageHandler ImageHandler
+@inject ApplicationDbContext DbContext
+@using UrfuPassSystem.Domain.Services.ImageHandler
+@using UrfuPassSystem.Infrastructure.ImageStorage
 
 @page "/check"
 @rendermode InteractiveServer
@@ -22,60 +27,124 @@ else
     <div class="image-name">Название фотографии: @image.OriginalFileName</div>
     <div class="container">
         <div class="row align-items-center">
-            <!-- Стрелка влево -->
-            <div class="col-auto">
-                <button class="btn btn-arrow">
-                    <i class="bi bi-arrow-left"></i>
-                </button>
-            </div>
-
             <!-- Фотографии с кнопками -->
             <div class="col d-flex justify-content-around">
                 <!-- Обработанное фото с кнопкой -->
+                <!-- Обработанное фото с кнопкой -->
                 <div class="photo-container">
                     <p>Обработанное фото</p>
-                    <button type="button" class="btn-download">
+                    <a class="btn-download" href="@PreviewProcessed" download>
                         <i class="bi bi-download"></i>
-                    </button>
-
-                    <img height="300" src="@PreviewRaw  "/>
-
-                    <button type="button" class="btn-success" @onclick="Success">Подтвердить</button>
+                    </a>
+                    <img src="@PreviewProcessed"  alt="Фото не прошло автоматическую проверку. Причина: @Reason"/>
+                    @if (PreviewProcessed != null)
+                        {<button type="button" class="btn-success" @onclick="Success">Подтвердить</button>}
                 </div>
-
+                    
                 <!-- Изначальное фото с кнопкой -->
                 <div class="photo-container">
                     <p>Изначальное фото</p>
-                    <button type="button" class="btn-download">
+                    <a class="btn-download" href="@PreviewRaw" download>
                         <i class="bi bi-download"></i>
-                    </button>
+                    </a>
+                    <img src="@PreviewRaw" />
+                    <button type="button" class="btn-danger" @onclick="ShowAdditionalOptions">Фото не подходит</button>
 
-                    <img height="300" src="@PreviewRaw"/>
-
-                    <button type="button" class="btn-danger" @onclick="NotSuccess">Фото не подходит</button>
+                    @if (showAdditionalButtons)
+                    {
+                        <div class="additional-buttons">
+                            <p>Заменить на:</p>
+                            <InputFile OnChange="FileUploaded"/>
+                            @if (fileUploaded)
+                                {<button type="button" class="btn btn-secondary" @onclick="SaveImage">Обработать</button>}
+                            <p>Или</p>
+                            <button type="button" class="btn btn-secondary" @onclick="ChooseReason">Выбрать причину</button>
+                            @if (showReasons)
+                            {
+                                <div class="reasons-buttons">
+                                    <button type="button" class="btn btn-secondary" @onclick="(e) => OnReasonSelected(e, Reasons[1])">@Reasons[1]</button>
+                                    <button type="button" class="btn btn-secondary" @onclick="(e) => OnReasonSelected(e, Reasons[2])">@Reasons[2]</button>
+                                    <button type="button" class="btn btn-secondary" @onclick="(e) => OnReasonSelected(e, Reasons[3])">@Reasons[3]</button>
+                                    <button type="button" class="btn btn-secondary" @onclick="(e) => OnReasonSelected(e, Reasons[4])">@Reasons[4]</button>
+                                    <button type="button" class="btn btn-secondary" @onclick="(e) => OnReasonSelected(e, Reasons[5])">@Reasons[5]</button>
+                                    <button type="button" class="btn btn-secondary" @onclick="(e) => OnReasonSelected(e, Reasons[6])">@Reasons[6]</button>
+                                    <button type="button" class="btn btn-secondary" @onclick="(e) => OnReasonSelected(e, Reasons[7])">@Reasons[7]</button>
+                                    <button type="button" class="btn btn-secondary" @onclick="(e) => OnReasonSelected(e, Reasons[8])">@Reasons[8]</button>
+                                    <button type="button" class="btn btn-secondary" @onclick="(e) => OnReasonSelected(e, Reasons[9])">@Reasons[9]</button>
+                                </div>
+                            }
+                        </div>
+                    }
                 </div>
+                    
             </div>
-
-            <!-- Стрелка вправо -->
-            <div class="col-auto">
-                <button class="btn btn-arrow">
-                    <i class="bi bi-arrow-right"></i>
-                </button>
-            </div>
+        </div>
+        <div class="container">
+            <button class="btn" @onclick="NavigateToList">Вернуться к списку фото</button>
         </div>
     </div>
     
-    <div class="container">
-        <button class="btn">Вернуться к списку фото</button>
-    </div>
-
 }
 
 @code {
     public Image? image;
-
     public string? PreviewRaw { get; set; }
     public string? PreviewProcessed { get; set; }
+    public string? Reason { get; set; }
+    private bool showAdditionalButtons;
+    private bool showReasons;
+    private IBrowserFile changedFile { get; set; }
+    private bool fileUploaded { get; set; }
+
+    public Dictionary<int, string> Reasons = new()
+    {
+        {1, "Плохое качество изображения"},
+        {2, "Нет лица"},
+        {3, "Несколько лиц"},
+        {4, "Плохо обрезано"},
+        {5, "Не подходящий фон"},
+        {6, "Посторонние объекты на фото"},
+        {7, "Не подходящий внешний вид"},
+        {8, "Неправильное положение лица на фото"},
+        {9, "Другая причина"},
+    };
+
+    private void ShowAdditionalOptions()
+    {
+        showAdditionalButtons = !showAdditionalButtons;
+    }
+    
+    private async Task SaveImage()
+    {
+        
+        
+        var newImage = ImageStorage.CreateImageFile("jpg");
+        Console.WriteLine(newImage + " save image");
+        await using var destinationStream = new FileStream(newImage, FileMode.Create);
+        await changedFile.OpenReadStream().CopyToAsync(destinationStream);
+        PreviewProcessed = newImage;
+        //NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+        StateHasChanged();
+        
+    }
+    
+    public Task FileUploaded(InputFileChangeEventArgs e)
+    {
+        changedFile = e.File;
+        fileUploaded = true;
+        return Task.CompletedTask;
+    }
+
+    private void ChooseReason()
+    {
+        showReasons = !showReasons;
+    }
+    
+    private async void OnReasonSelected(MouseEventArgs e, string reason)
+    {
+        if (image != null) Reason = reason;
+        await NotSuccess(e);
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -84,12 +153,14 @@ else
 
     private async Task Success(MouseEventArgs e)
     {
+        NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
         var check = await CreateCheck(image!, true);
         await Update();
     }
 
     private async Task NotSuccess(MouseEventArgs e)
     {
+        NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
         var check = await CreateCheck(image!, false);
         await Update();
     }
@@ -114,16 +185,31 @@ else
     {
         image = await Database.Images
             .Include(i => i.Checks)
-            .Where(i => !i.Checks!.Any(c => !c.IsAuto && !c.IsDeleted)).FirstOrDefaultAsync();
+            .Where(i => !i.Checks!.Any(c => !c.IsAuto && !c.IsDeleted))
+            .FirstOrDefaultAsync();
         if (image == null)
             return;
 
         PreviewRaw = image.FilePath;
-
         var autoCheck = image.Checks?.FirstOrDefault(c => c.IsAuto);
         if (autoCheck == null || !File.Exists(autoCheck.FilePath))
-            PreviewProcessed = null;
+        {
+            PreviewProcessed = PreviewProcessed;
+        }
         else
             PreviewProcessed = autoCheck.FilePath;
+        
+        showAdditionalButtons = false;
+        showReasons = false;
+        fileUploaded = false;
     }
+
+    [Inject]
+    NavigationManager NavigationManager { get; set; }
+
+    private void NavigateToList()
+    {
+        NavigationManager.NavigateTo("list");
+    }
+
 }
