@@ -36,7 +36,7 @@ else
                     <a class="btn-download" href="@PreviewProcessed" download>
                         <i class="bi bi-download"></i>
                     </a>
-                    <img src="@PreviewProcessed"  alt="Фото не прошло автоматическую проверку. Причина: @Reason"/>
+                    <img src="@PreviewProcessed"  alt="Фото не прошло автоматическую проверку. Причина: @Reasons[(int)image.Checks?.First().ResultCode!]"/>
                     @if (PreviewProcessed != null)
                         {<button type="button" class="btn-success" @onclick="Success">Подтвердить</button>}
                 </div>
@@ -98,6 +98,8 @@ else
 
     public Dictionary<int, string> Reasons = new()
     {
+        {-1, "Непредвиденная ошибка"},
+        {0, "Успешная проверка"},
         {1, "Плохое качество изображения"},
         {2, "Нет лица"},
         {3, "Несколько лиц"},
