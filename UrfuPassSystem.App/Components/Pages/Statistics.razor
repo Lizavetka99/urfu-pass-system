@@ -1,0 +1,46 @@
+﻿@using UrfuPassSystem.Domain.Services
+
+@page "/statistics"
+@rendermode InteractiveServer
+@attribute [StreamRendering]
+@inject ApplicationDbContext Database
+@inject ILogger<Statistics> Logger
+
+<PageTitle>Статистика</PageTitle>
+
+<h1>Статистика</h1>
+
+<div class="col-sm-4">
+    <label>От:</label>
+    <input type="date" class="form-control" @bind="MinUploadTime" @onkeydown="FilterKeyDown" />
+    <label class="mt-2">До:</label>
+    <input type="date" class="form-control" @bind="MaxUploadTime" @onkeydown="FilterKeyDown" />
+    <div class="btn btn-primary form-control" @onclick="LoadStatistics">Загрузить</div>
+</div>
+
+@if (_loaded)
+{
+    <div>
+        Всего фото:
+    </div>
+}
+@code {
+    private bool _loading;
+    private bool _loaded;
+
+    [Parameter, SupplyParameterFromQuery]
+    public DateTime? MinUploadTime { get; set; }
+    [Parameter, SupplyParameterFromQuery]
+    public DateTime? MaxUploadTime { get; set; }
+
+    private async Task FilterKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key != "Enter")
+            return;
+        await LoadStatistics();
+    }
+
+    private async Task LoadStatistics()
+    {
+    }
+}
