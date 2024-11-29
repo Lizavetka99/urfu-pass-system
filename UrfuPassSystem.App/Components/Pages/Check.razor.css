@@ -115,16 +115,19 @@ img {
 .additional-buttons {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 25px; 
 }
 
 .reasons-buttons{
     display: flex;
-    flex-direction: column; 
-    gap: 15px;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .reasons-buttons button {
-    margin-bottom: 10px;
-    display: block;
+    margin-bottom: 5px;
+}
+
+button {
+    gap: 10px;
 }

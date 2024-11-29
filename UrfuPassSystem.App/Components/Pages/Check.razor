@@ -37,7 +37,8 @@ else
                         <i class="bi bi-download"></i>
                     </a>
                     <img src="@PreviewProcessed"  alt="Фото не прошло автоматическую проверку. Причина: @Reason"/>
-                    <button type="button" class="btn-success" @onclick="Success">Подтвердить</button>
+                    @if (PreviewProcessed != null)
+                        {<button type="button" class="btn-success" @onclick="Success">Подтвердить</button>}
                 </div>
                     
                 <!-- Изначальное фото с кнопкой -->
@@ -54,14 +55,14 @@ else
                         <div class="additional-buttons">
                             <p>Заменить на:</p>
                             <InputFile OnChange="FileUploaded"/>
-                           
-                            <button type="button" class="btn btn-primary" @onclick="SaveImage">Обработать</button>
-                            
+                            @if (fileUploaded)
+                                {<button type="button" class="btn btn-secondary" @onclick="SaveImage">Обработать</button>}
+                            <p>Или</p>
                             <button type="button" class="btn btn-secondary" @onclick="ChooseReason">Выбрать причину</button>
                             @if (showReasons)
                             {
                                 <div class="reasons-buttons">
-                                    <button type="button" class="btn btn-primary" @onclick="(e) => OnReasonSelected(e, Reasons[1])">@Reasons[1]</button>
+                                    <button type="button" class="btn btn-secondary" @onclick="(e) => OnReasonSelected(e, Reasons[1])">@Reasons[1]</button>
                                     <button type="button" class="btn btn-secondary" @onclick="(e) => OnReasonSelected(e, Reasons[2])">@Reasons[2]</button>
                                     <button type="button" class="btn btn-secondary" @onclick="(e) => OnReasonSelected(e, Reasons[3])">@Reasons[3]</button>
                                     <button type="button" class="btn btn-secondary" @onclick="(e) => OnReasonSelected(e, Reasons[4])">@Reasons[4]</button>
@@ -90,8 +91,8 @@ else
     public string? PreviewRaw { get; set; }
     public string? PreviewProcessed { get; set; }
     public string? Reason { get; set; }
-    private bool showAdditionalButtons = false;
-    private bool showReasons = false;
+    private bool showAdditionalButtons;
+    private bool showReasons;
     private IBrowserFile changedFile { get; set; }
     private bool fileUploaded { get; set; }
 
@@ -130,8 +131,8 @@ else
     public Task FileUploaded(InputFileChangeEventArgs e)
     {
         changedFile = e.File;
-        return Task.CompletedTask;
         fileUploaded = true;
+        return Task.CompletedTask;
     }
 
     private void ChooseReason()
