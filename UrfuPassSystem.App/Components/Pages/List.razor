@@ -50,9 +50,7 @@ else
         <thead>
             <tr>
                 <th class="align-top">Фото</th>
-                <th class="align-top">Фамилия</th>
-                <th class="align-top">Имя</th>
-                <th class="align-top">Отчество</th>
+                <th class="align-top">ФИО</th>
                 <th class="align-top">Группа</th>
                 <th class="align-top">Институт</th>
                 <th class="align-top">Дата проверки
@@ -68,18 +66,17 @@ else
                     </div>
                 </th>
                 <th class="align-top">Номер студенческого</th>
-                <th class="align-top">Почта</th>
                 <th class="align-top">Нейросеть
                     <div class="dropdown">
                         <div class="btn" data-bs-toggle="dropdown"><i class="bi bi-filter"></i></div>
                         <ul class="dropdown-menu px-3">
                             <li onclick="event.stopPropagation();">
                                 <input id="auto-success" type="checkbox" @bind="IncludeAutoSuccess" @onkeydown="FilterKeyDown" />
-                                <label for="auto-success">Одобренные</label>
+                                <label for="auto-success" class="user-select-none">Одобренные</label>
                             </li>
                             <li onclick="event.stopPropagation();">
                                 <input id="auto-reject" type="checkbox" @bind="IncludeAutoReject" @onkeydown="FilterKeyDown" />
-                                <label for="auto-reject">Отклоненные</label>
+                                <label for="auto-reject" class="user-select-none">Отклоненные</label>
                             </li>
                             <li>
                                 <div class="btn btn-primary form-control" @onclick="Update">Обновить</div>
@@ -94,15 +91,15 @@ else
                         <ul class="dropdown-menu dropdown-menu-end px-3">
                             <li onclick="event.stopPropagation();">
                                 <input id="bureau-unchecked" type="checkbox" @bind="IncludeBureauUnchecked" @onkeydown="FilterKeyDown" />
-                                <label for="bureau-unchecked">Непроверенные</label>
+                                <label for="bureau-unchecked" class="user-select-none">Непроверенные</label>
                             </li>
                             <li onclick="event.stopPropagation();">
                                 <input id="bureau-success" type="checkbox" @bind="IncludeBureauSuccess" @onkeydown="FilterKeyDown" />
-                                <label for="bureau-success">Одобренные</label>
+                                <label for="bureau-success" class="user-select-none">Одобренные</label>
                             </li>
                             <li onclick="event.stopPropagation();">
                                 <input id="bureau-reject" type="checkbox" @bind="IncludeBureauReject" @onkeydown="FilterKeyDown" />
-                                <label for="bureau-reject">Отклоненные</label>
+                                <label for="bureau-reject" class="user-select-none">Отклоненные</label>
                             </li>
                             <li>
                                 <div class="btn btn-primary form-control" @onclick="Update">Обновить</div>
@@ -118,11 +115,7 @@ else
                 <tr @onclick="() => SelectRow(image)" class="@GetRowClass(image)">
                     <!-- Фото -->
                     <td><img height="50" src="@(last?.FilePath ?? image.FilePath)" /></td>
-                    <!-- Фамилия -->
-                    <td></td>
-                    <!-- Имя -->
-                    <td></td>
-                    <!-- Отчество -->
+                    <!-- ФИО -->
                     <td></td>
                     <!-- Группа -->
                     <td></td>
@@ -132,8 +125,6 @@ else
                     <td>@last?.CheckTime.ToLocalTime()</td>
                     <!-- Номер студенческого -->
                     <td>@image.StudentCardId</td>
-                    <!-- Почта -->
-                    <td></td>
                     <!-- Статус проверки Нейронка-->
                     @if (auto is not null)
                     {
@@ -235,7 +226,6 @@ else
             .Select(i => (i, i.Checks?.FirstOrDefault(), i.Checks?.FirstOrDefault(c => c.IsAuto), i.Checks?.FirstOrDefault(c => !c.IsAuto)))
             .ToArray();
     }
-
 
     private async Task Download(MouseEventArgs e)
     {
