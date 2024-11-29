@@ -36,7 +36,7 @@ else
                     <a class="btn-download" href="@PreviewProcessed" download>
                         <i class="bi bi-download"></i>
                     </a>
-                    <img height="300" src="@PreviewProcessed" />
+                    <img src="@PreviewProcessed"  alt="Фото не прошло автоматическую проверку. Причина: @Reason"/>
                     <button type="button" class="btn-success" @onclick="Success">Подтвердить</button>
                 </div>
                     
@@ -46,7 +46,7 @@ else
                     <a class="btn-download" href="@PreviewRaw" download>
                         <i class="bi bi-download"></i>
                     </a>
-                    <img height="300" src="@PreviewRaw" />
+                    <img src="@PreviewRaw" />
                     <button type="button" class="btn-danger" @onclick="ShowAdditionalOptions">Фото не подходит</button>
 
                     @if (showAdditionalButtons)

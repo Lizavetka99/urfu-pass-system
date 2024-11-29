@@ -1,3 +1,9 @@
+img {
+    text-align: center;
+    color: #940303;
+    width: 300px;
+    height: auto;
+}
 .image-name {
     width: 100%;
     text-align: center;
