@@ -4,14 +4,10 @@
 @using UrfuPassSystem.Domain.Services
 @using Microsoft.EntityFrameworkCore
 @inject IImageStorage ImageStorage
-@inject IImageHandler ImageHandler
-@inject ApplicationDbContext DbContext
-@using UrfuPassSystem.Domain.Services.ImageHandler
 @using UrfuPassSystem.Infrastructure.ImageStorage
 
 @page "/check"
 @rendermode InteractiveServer
-@inject ILogger<Check> Logger
 @inject ApplicationDbContext Database
 
 <PageTitle>Проверка фотографий</PageTitle>
@@ -47,7 +43,7 @@ else
                     <a class="btn-download" href="@PreviewRaw" download>
                         <i class="bi bi-download"></i>
                     </a>
-                    <img src="@PreviewRaw" />
+                    <img src="@PreviewRaw" alt=""/>
                     <button type="button" class="btn-danger" @onclick="ShowAdditionalOptions">Фото не подходит</button>
 
                     @if (showAdditionalButtons)
@@ -76,27 +72,25 @@ else
                         </div>
                     }
                 </div>
-                    
             </div>
         </div>
         <div class="container">
             <button class="btn" @onclick="NavigateToList">Вернуться к списку фото</button>
         </div>
     </div>
-    
 }
 
 @code {
-    public Image? image;
-    public string? PreviewRaw { get; set; }
-    public string? PreviewProcessed { get; set; }
+    private Image? image;
+    private string? PreviewRaw { get; set; }
+    private string? PreviewProcessed { get; set; }
     public string? Reason { get; set; }
     private bool showAdditionalButtons;
     private bool showReasons;
     private IBrowserFile changedFile { get; set; }
     private bool fileUploaded { get; set; }
 
-    public Dictionary<int, string> Reasons = new()
+    private readonly Dictionary<int, string> Reasons = new()
     {
         {-1, "Непредвиденная ошибка"},
         {0, "Успешная проверка"},
@@ -118,14 +112,10 @@ else
     
     private async Task SaveImage()
     {
-        
-        
         var newImage = ImageStorage.CreateImageFile("jpg");
-        Console.WriteLine(newImage + " save image");
         await using var destinationStream = new FileStream(newImage, FileMode.Create);
         await changedFile.OpenReadStream().CopyToAsync(destinationStream);
         PreviewProcessed = newImage;
-        //NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
         StateHasChanged();
         
     }
@@ -194,13 +184,7 @@ else
 
         PreviewRaw = image.FilePath;
         var autoCheck = image.Checks?.FirstOrDefault(c => c.IsAuto);
-        if (autoCheck == null || !File.Exists(autoCheck.FilePath))
-        {
-            PreviewProcessed = PreviewProcessed;
-        }
-        else
-            PreviewProcessed = autoCheck.FilePath;
-        
+        PreviewProcessed = autoCheck == null || !File.Exists(autoCheck.FilePath) ? PreviewProcessed : autoCheck.FilePath;
         showAdditionalButtons = false;
         showReasons = false;
         fileUploaded = false;
@@ -213,5 +197,4 @@ else
     {
         NavigationManager.NavigateTo("list");
     }
-
 }
