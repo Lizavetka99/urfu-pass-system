@@ -1,8 +1,12 @@
-﻿@using UrfuPassSystem.Domain.Services
+﻿@using UrfuPassSystem.Domain.Enums
+@using UrfuPassSystem.Domain.Models.Statistic
+@using UrfuPassSystem.Domain.Services
+@using UrfuPassSystem.Domain.Services.StatisticMaker
 
 @page "/statistics"
 @rendermode InteractiveServer
 @attribute [StreamRendering]
+@inject IStatisticMaker StatisticMaker
 @inject ApplicationDbContext Database
 @inject ILogger<Statistics> Logger
 
@@ -18,19 +22,36 @@
     <div class="btn btn-primary form-control" @onclick="LoadStatistics">Загрузить</div>
 </div>
 
-@if (_loaded)
+@if (_loading)
+{
+    <p><em>Загрузка...</em></p>
+}
+else if (_loaded)
 {
     <div>
-        Всего фото:
+        <div>Всего фото: @_totalImageStatistic!.Total</div>
+        <div>Одобренных: @_totalImageStatistic!.Success</div>
+        <div>Отклоненных: @(_totalImageStatistic!.Total - _totalImageStatistic!.Success)</div>
+    </div>
+    <div>
+        <h4>Причины:</h4>
+        @foreach (var badImageStatistic in _totalBadImageStatistic!.Statistics)
+        {
+            <div>
+                @CheckTitle(@badImageStatistic.ResultCode) - @badImageStatistic.Count
+            </div>
+        }
     </div>
 }
+
 @code {
     private bool _loading;
     private bool _loaded;
 
-    [Parameter, SupplyParameterFromQuery]
+    private TotalImageStatistic? _totalImageStatistic;
+    private TotalBadImageStatistic? _totalBadImageStatistic;
+
     public DateTime? MinUploadTime { get; set; }
-    [Parameter, SupplyParameterFromQuery]
     public DateTime? MaxUploadTime { get; set; }
 
     private async Task FilterKeyDown(KeyboardEventArgs e)
@@ -42,5 +63,31 @@
 
     private async Task LoadStatistics()
     {
+        if (_loading)
+            return;
+        _loaded = false;
+        _loading = true;
+
+        _totalImageStatistic = await StatisticMaker.MakeImageStatistic(Database, MinUploadTime, MaxUploadTime);
+        _totalBadImageStatistic = await StatisticMaker.MakeBadImageStatistic(Database, MinUploadTime, MaxUploadTime);
+
+        _loading = false;
+        _loaded = true;
     }
+
+    private string CheckTitle(ImageCheckResultCode code) => code switch
+    {
+        ImageCheckResultCode.UnexpectedError => "Неожиданная ошибка",
+        ImageCheckResultCode.Success => "Одобрено",
+        ImageCheckResultCode.BadQuality => "Плохое качество",
+        ImageCheckResultCode.NoFace => "Лицо не найдено",
+        ImageCheckResultCode.MoreThanOneFace => "Найдено несколько лиц",
+        ImageCheckResultCode.BadCrop => "Плохо обрезано",
+        ImageCheckResultCode.BadBackground => "Неподходящий фон",
+        ImageCheckResultCode.ForeignObjects => "Посторонние объекты",
+        ImageCheckResultCode.BadAppearance => "Неподходящий внешний вид",
+        ImageCheckResultCode.BadFace => "Неправильное положение лица на фото",
+        ImageCheckResultCode.UnexpectedReason => "Другая причина",
+        _ => "Неизвестная причина"
+    };
 }

@@ -7,6 +7,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
 using UrfuPassSystem.Domain.Services.ImageHandler;
 using UrfuPassSystem.Infrastructure.ArchiveHandler;
+using UrfuPassSystem.Domain.Services.StatisticMaker;
 
 if (!Directory.Exists("images"))
     Directory.CreateDirectory("images");
@@ -38,6 +39,7 @@ builder.Services.AddSingleton<IImageProcessor, ImageProcessor>();
 builder.Services.Configure<ImageStorageOptions>(builder.Configuration.GetSection("ImageStorage"));
 builder.Services.AddSingleton<IImageStorage, ImageStorage>();
 
+builder.Services.AddSingleton<IStatisticMaker, StatisticMaker>();
 builder.Services.AddScoped<IImageHandler, ImageHandler>();
 
 var app = builder.Build();
