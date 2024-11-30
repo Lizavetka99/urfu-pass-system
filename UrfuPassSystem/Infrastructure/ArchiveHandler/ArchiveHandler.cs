@@ -12,4 +12,12 @@ public class ArchiveHandler : IArchiveHandler
         ZipFile.ExtractToDirectory(archivePath, destinationPath);
         return Task.CompletedTask;
     }
+
+    public Task FolderToZip(string folderPath, string archivePath)
+    {
+        if (Path.GetExtension(archivePath) != ".zip")
+            throw new NotSupportedException("Only .zip archive supported.");
+        ZipFile.CreateFromDirectory(folderPath, archivePath);
+        return Task.CompletedTask;
+    }
 }

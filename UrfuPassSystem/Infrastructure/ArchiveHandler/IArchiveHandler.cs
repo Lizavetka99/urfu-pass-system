@@ -7,4 +7,5 @@ public interface IArchiveHandler
     /// <param name="archivePath">Путь к файлу архива.</param>
     /// <param name="destinationPath">Путь к папке, в которую нужно извлечь архив.</param>
     Task ExtractArchive(string archivePath, string destinationPath);
+    Task FolderToZip(string folderPath, string archivePath);
 }

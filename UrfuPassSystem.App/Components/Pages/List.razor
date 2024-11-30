@@ -1,93 +1,358 @@
 ﻿@using Microsoft.EntityFrameworkCore
+@using System.Collections.Specialized
+@using System.Runtime.CompilerServices
 @using UrfuPassSystem.Domain.Entities
+@using UrfuPassSystem.Domain.Enums
 @using UrfuPassSystem.Domain.Services
+@using UrfuPassSystem.Infrastructure
+@using UrfuPassSystem.Infrastructure.ArchiveHandler
+@using UrfuPassSystem.Infrastructure.ImageStorage
 
 @page "/list"
+@rendermode InteractiveServer
 @attribute [StreamRendering]
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JS
+@inject IArchiveHandler ArchiveHandler
+@inject IImageStorage ImageStorage
 @inject ApplicationDbContext Database
+@inject ILogger<List> Logger
 
-    <PageTitle>Список фото</PageTitle>
+<PageTitle>Список фото</PageTitle>
 
-    @if (images == null)
-    {
-        <p><em>Загрузка...</em></p>
+@if (images == null)
+{
+    <p><em>Загрузка...</em></p>
+}
+else
+{
+    <!-- Форма для поиска
+    <form action="" method="get">
+        <input name="s" placeholder="Искать здесь..." type="search">
+        <button type="submit">
+            <i class="bi bi-search"></i>
+        </button>
+    </form> -->
+
+    <!-- Форма с 4 кнопками: Скачать Проверить Показывать только... Сортировать по -->
+    <!--<form action="" method="get" class="button-form">
+        <button type="submit" class="list-button" disabled>Скачать</button>
+        <button type="submit" class="list-button" disabled>Проверить</button>
+        <button type="submit" class="list-button">Проверено деканатом</button>
+        <button type="submit" class="list-button">Сортировать по</button>
+    </form>-->
+    <div class="button-form">
+        <div class="button list-button" @onclick="SelectAll">@(_anySelected ? "Отменить выделение" : "Выбрать все")</div>
+        <div class="button list-button @(_anySelected ? "" : "disabled")" @onclick="Download">Скачать</div>
+    </div>
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th class="align-top">Фото</th>
+                <th class="align-top">ФИО</th>
+                <th class="align-top">Группа</th>
+                <th class="align-top">Институт</th>
+                <th class="align-top">Дата проверки
+                    <div class="dropdown">
+                        <div class="btn" data-bs-toggle="dropdown"><i class="bi bi-filter"></i></div>
+                        <div class="dropdown-menu px-3">
+                            <label>От:</label>
+                            <input type="datetime-local" class="form-control" @bind="MinCheckTime" @onkeydown="FilterKeyDown" />
+                            <label class="mt-2">До:</label>
+                            <input type="datetime-local" class="form-control" @bind="MaxCheckTime" @onkeydown="FilterKeyDown" />
+                            <div class="btn btn-primary form-control" @onclick="Update">Обновить</div>
+                        </div>
+                    </div>
+                </th>
+                <th class="align-top">Номер студенческого</th>
+                <th class="align-top">Нейросеть
+                    <div class="dropdown">
+                        <div class="btn" data-bs-toggle="dropdown"><i class="bi bi-filter"></i></div>
+                        <ul class="dropdown-menu px-3">
+                            <li onclick="event.stopPropagation();">
+                                <input id="auto-success" type="checkbox" @bind="IncludeAutoSuccess" @onkeydown="FilterKeyDown" />
+                                <label for="auto-success" class="user-select-none">Одобренные</label>
+                            </li>
+                            <li onclick="event.stopPropagation();">
+                                <input id="auto-reject" type="checkbox" @bind="IncludeAutoReject" @onkeydown="FilterKeyDown" />
+                                <label for="auto-reject" class="user-select-none">Отклоненные</label>
+                            </li>
+                            <li>
+                                <div class="btn btn-primary form-control" @onclick="Update">Обновить</div>
+                            </li>
+                        </ul>
+                    </div>
+                </th>
+                <th class="align-top">Деканат</th>
+                <th class="align-top">Бюро
+                    <div class="dropdown">
+                        <div class="btn" data-bs-toggle="dropdown"><i class="bi bi-filter"></i></div>
+                        <ul class="dropdown-menu dropdown-menu-end px-3">
+                            <li onclick="event.stopPropagation();">
+                                <input id="bureau-unchecked" type="checkbox" @bind="IncludeBureauUnchecked" @onkeydown="FilterKeyDown" />
+                                <label for="bureau-unchecked" class="user-select-none">Непроверенные</label>
+                            </li>
+                            <li onclick="event.stopPropagation();">
+                                <input id="bureau-success" type="checkbox" @bind="IncludeBureauSuccess" @onkeydown="FilterKeyDown" />
+                                <label for="bureau-success" class="user-select-none">Одобренные</label>
+                            </li>
+                            <li onclick="event.stopPropagation();">
+                                <input id="bureau-reject" type="checkbox" @bind="IncludeBureauReject" @onkeydown="FilterKeyDown" />
+                                <label for="bureau-reject" class="user-select-none">Отклоненные</label>
+                            </li>
+                            <li>
+                                <div class="btn btn-primary form-control" @onclick="Update">Обновить</div>
+                            </li>
+                        </ul>
+                    </div>
+                </th>
+            </tr>
+            </thead>
+        <tbody>
+            @foreach (var (image, last, auto, bureau) in images)
+            {
+                <tr @onclick="() => SelectRow(image)" class="@GetRowClass(image)">
+                    <!-- Фото -->
+                    <td><img height="50" src="@(last?.FilePath ?? image.FilePath)" /></td>
+                    <!-- ФИО -->
+                    <td></td>
+                    <!-- Группа -->
+                    <td></td>
+                    <!-- Институт -->
+                    <td></td>
+                    <!-- Дата проверки -->
+                    <td>@last?.CheckTime.ToLocalTime()</td>
+                    <!-- Номер студенческого -->
+                    <td>@image.StudentCardId</td>
+                    <!-- Статус проверки Нейронка-->
+                    @if (auto is not null)
+                    {
+                        <td class="text-center @CheckClass(auto)" title="@CheckTitle(auto)"><i class="@CheckIcon(auto) fs-3"></i></td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                    <!-- Статус проверки Деканат-->
+                    <td></td>
+                    <!-- Статус проверки Бюро-->
+                    @if (bureau is not null)
+                    {
+                        <td class="text-center @CheckClass(bureau)" title="@CheckTitle(bureau)"><i class="@CheckIcon(bureau) fs-3"></i></td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<script>
+    window.triggerFileDownload = (fileName, url) => {
+        const anchorElement = document.createElement('a');
+        anchorElement.href = url;
+        anchorElement.download = fileName ?? '';
+        anchorElement.click();
+        anchorElement.remove();
     }
-    else
-    {
-        <!-- Форма для поиска -->
-        <form action="" method="get">
-            <input name="s" placeholder="Искать здесь..." type="search">
-            <button type="submit">
-                <i class="bi bi-search"></i>
-            </button>
-        </form>
-        
-        <!-- Форма с 4 кнопками: Скачать Проверить Показывать только... Сортировать по -->
-        <form action="" method="get" class="button-form">
-            <button type="submit" class="list-button">Скачать</button>
-            <button type="submit" class="list-button">Проверить</button>
-            <button type="submit" class="list-button">Проверено деканатом</button>
-            <button type="submit" class="list-button">Сортировать по</button>
-        </form>
-        
-        <table class="table">
-            <thead>
-                    <tr>
-                        <th>Фото</th>
-                        <th>Фамилия</th>
-                        <th>Имя</th>
-                        <th>Отчество</th>
-                        <th>Группа</th>
-                        <th>Институт</th>
-                        <th>Дата загрузки</th>
-                        <th>Номер студенческого</th>
-                        <th>Почта</th>
-                        <th>Нейросеть</th>
-                        <th>Деканат</th>
-                        <th>Бюро</th>
-                    </tr>
-                    </thead>
-            <tbody>
-                @foreach (var image in images)
-                {
-                    <tr>
-                        <!-- Фото -->
-                        <td><img height="50" src="@image.FilePath" /></td>
-                        <!-- Фамилия -->
-                        <td></td>
-                        <!-- Имя -->
-                        <td></td>
-                        <!-- Отчество -->
-                        <td></td>
-                        <!-- Группа -->
-                        <td></td>
-                        <!-- Институт -->
-                        <td></td>
-                        <!-- Дата загрузки -->
-                        <td>@image.SentTime.ToString()</td>
-                        <!-- Номер студенческого -->
-                        <td>@image.StudentCardId</td>
-                        <!-- Почта -->
-                        <td></td>
-                        <!-- Статус проверки Нейронка-->
-                        <td></td>
-                        <!-- Статус проверки Деканат-->
-                        <td></td>
-                        <!-- Статус проверки Бюро-->
-                        <td>@image.Checks?.SingleOrDefault()?.IsSuccess</td>
-                     </tr>
-                }
-            </tbody>
-        </table>
-    }
+</script>
 
 @code {
-    private Image[]? images;
+    private (Image image, ImageCheck? last, ImageCheck? auto, ImageCheck? bureau)[]? images;
+
+    private bool _downloadInProgress = false;
+
+    private bool _anySelected = false;
+    private bool _selectInverted = false;
+    private HashSet<Image> _selected = [];
+
+    [Parameter, SupplyParameterFromQuery]
+    public DateTime? MinCheckTime { get; set; }
+    [Parameter, SupplyParameterFromQuery]
+    public DateTime? MaxCheckTime{ get; set; }
+
+    [Parameter, SupplyParameterFromQuery]
+    public bool? IncludeAutoSuccess { get; set; }
+    [Parameter, SupplyParameterFromQuery]
+    public bool? IncludeAutoReject { get; set; }
+
+    [Parameter, SupplyParameterFromQuery]
+    public bool? IncludeBureauUnchecked { get; set; }
+    [Parameter, SupplyParameterFromQuery]
+    public bool? IncludeBureauSuccess { get; set; }
+    [Parameter, SupplyParameterFromQuery]
+    public bool? IncludeBureauReject { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        IncludeAutoSuccess = IncludeAutoSuccess ?? true;
+        IncludeAutoReject = IncludeAutoReject ?? false;
+        IncludeBureauUnchecked = IncludeBureauUnchecked ?? true;
+        IncludeBureauSuccess = IncludeBureauSuccess ?? true;
+        IncludeBureauReject = IncludeBureauReject ?? true;
+    }
 
     protected override async Task OnInitializedAsync()
     {
-        images = await Database.Images
-            .Include(i => i.Checks!.Where(c => !c.IsDeleted).OrderByDescending(c => c.CheckTime).Take(1))
-            .ToArrayAsync();
+        var imagesRequest = Database.Images.Include(i => i.Checks!.Where(c => !c.IsDeleted).OrderByDescending(c => c.CheckTime))
+            .AsEnumerable();
+
+        if (MinCheckTime.HasValue)
+            imagesRequest = imagesRequest.Where(i => i.Checks!.Count == 0 || i.Checks!.First().CheckTime >= MinCheckTime.Value.ToUniversalTime());
+
+        if (MaxCheckTime.HasValue)
+            imagesRequest = imagesRequest.Where(i => i.Checks!.Count == 0 || i.Checks!.First().CheckTime <= MaxCheckTime.Value.ToUniversalTime());
+
+        if (IncludeAutoSuccess == false)
+            imagesRequest = imagesRequest.Where(i => !i.Checks!.Any(c => c.IsAuto) || !i.Checks!.First(c => c.IsAuto).IsSuccess);
+
+        if (IncludeAutoReject != true)
+            imagesRequest = imagesRequest.Where(i => !i.Checks!.Any(c => c.IsAuto) || i.Checks!.First(c => c.IsAuto).IsSuccess);
+
+        if (IncludeBureauUnchecked == false)
+            imagesRequest = imagesRequest.Where(i => i.Checks!.Any(c => !c.IsAuto));
+
+        if (IncludeBureauSuccess == false)
+            imagesRequest = imagesRequest.Where(i => !i.Checks!.Any(c => !c.IsAuto) || !i.Checks!.First(c => !c.IsAuto).IsSuccess);
+
+        if (IncludeBureauReject == false)
+            imagesRequest = imagesRequest.Where(i => !i.Checks!.Any(c => !c.IsAuto) || i.Checks!.First(c => !c.IsAuto).IsSuccess);
+
+        images = (imagesRequest)
+            .Select(i => (i, i.Checks?.FirstOrDefault(), i.Checks?.FirstOrDefault(c => c.IsAuto), i.Checks?.FirstOrDefault(c => !c.IsAuto)))
+            .ToArray();
     }
+
+    private async Task Download(MouseEventArgs e)
+    {
+        if (!_anySelected)
+            return;
+        _downloadInProgress = true;
+        try
+        {
+            var tempFolder = ImageStorage.CreateTempFolger();
+            var imagesPath = Path.Combine(tempFolder.Path, "images");
+            Directory.CreateDirectory(imagesPath);
+            foreach (var (image, last, _, _) in images!.Where(i => _selected.Contains(i.image) ^ _selectInverted))
+            {
+                var sourcePath = last?.FilePath ?? image.FilePath;
+                var extension = Path.GetExtension(sourcePath);
+                var filename = image.StudentCardId ?? image.OriginalFileName;
+                var filenameWithoutExtension = Path.GetFileNameWithoutExtension(filename);
+                var destinationPathWithoutExtension = Path.Combine(imagesPath, filenameWithoutExtension);
+                var destinationPath = Path.ChangeExtension(destinationPathWithoutExtension, extension);
+                if (File.Exists(destinationPath))
+                {
+                    for (var i = 0; i < 100; i++)
+                    {
+                        var nextPath = Path.ChangeExtension($"{destinationPathWithoutExtension} ({i})", extension);
+                        if (!File.Exists(nextPath))
+                        {
+                            destinationPath = nextPath;
+                            break;
+                        }
+                    }
+                }
+                File.Copy(sourcePath, destinationPath);
+            }
+            var zipFilePath = Path.Combine(tempFolder.Path, "images.zip");
+            await ArchiveHandler.FolderToZip(imagesPath, zipFilePath);
+            await JS.InvokeVoidAsync("triggerFileDownload", "images.zip", zipFilePath);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Download exception");
+        }
+        finally
+        {
+            _downloadInProgress = false;
+        }
+    }
+
+    private void SelectRow(Image image)
+    {
+        if (_downloadInProgress)
+            return;
+        if (_selected.Contains(image))
+            _selected.Remove(image);
+        else
+            _selected.Add(image);
+        _anySelected = !_selectInverted && _selected.Count > 0 || _selectInverted && _selected.Count < images?.Length;
+    }
+
+    private void SelectAll(MouseEventArgs e)
+    {
+        if (_downloadInProgress)
+            return;
+        _selected.Clear();
+        _selectInverted = _anySelected = !_anySelected && images?.Length > 0;
+    }
+
+    private void FilterKeyDown(KeyboardEventArgs e)
+    {
+        if (_downloadInProgress)
+            return;
+        if (e.Key != "Enter")
+            return;
+        Update();
+    }
+
+    private void Update()
+    {
+        if (_downloadInProgress)
+            return;
+        var uri = new Uri(NavigationManager.Uri);
+        var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+
+        query.SetIf(MinCheckTime.HasValue, MinCheckTime);
+        query.SetIf(MaxCheckTime.HasValue, MaxCheckTime);
+
+        query.SetIf(IncludeAutoSuccess == false, IncludeAutoSuccess);
+        query.SetIf(IncludeAutoReject == true, IncludeAutoReject);
+
+        query.SetIf(IncludeBureauUnchecked == false, IncludeBureauUnchecked);
+        query.SetIf(IncludeBureauSuccess == false, IncludeBureauSuccess);
+        query.SetIf(IncludeBureauReject == false, IncludeBureauReject);
+
+        var uriBuilder = new UriBuilder(uri)
+            {
+                Query = query.ToString()
+            };
+
+        NavigationManager.NavigateTo(uriBuilder.ToString(), forceLoad: true);
+    }
+
+    private string GetRowClass(Image image) => _selected.Contains(image) ^ _selectInverted ? "table-primary" : "";
+
+    private string CheckClass(ImageCheck check) => check switch
+    {
+        { IsSuccess: true } => "text-success",
+        { IsSuccess: false } => "text-danger",
+    };
+
+    private string CheckIcon(ImageCheck check) => check switch
+    {
+        { IsSuccess: true } => "bi bi-check-circle-fill",
+        { IsSuccess: false } => "bi bi-x-circle-fill",
+    };
+
+    private string CheckTitle(ImageCheck check) => check.ResultCode switch
+    {
+        ImageCheckResultCode.UnexpectedError => "Неожиданная ошибка",
+        ImageCheckResultCode.Success => "Одобрено",
+        ImageCheckResultCode.BadQuality => "Плохое качество",
+        ImageCheckResultCode.NoFace => "Лицо не найдено",
+        ImageCheckResultCode.MoreThanOneFace => "Найдено несколько лиц",
+        ImageCheckResultCode.BadCrop => "Плохо обрезано",
+        ImageCheckResultCode.BadBackground => "Неподходящий фон",
+        ImageCheckResultCode.ForeignObjects => "Посторонние объекты",
+        ImageCheckResultCode.BadAppearance => "Неподходящий внешний вид",
+        ImageCheckResultCode.BadFace => "Неправильное положение лица на фото",
+        ImageCheckResultCode.UnexpectedReason => "Другая причина",
+        _ => "Неизвестная причина"
+    };
 }
