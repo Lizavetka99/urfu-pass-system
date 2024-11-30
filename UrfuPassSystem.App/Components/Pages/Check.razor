@@ -184,7 +184,7 @@ else
 
         PreviewRaw = image.FilePath;
         var autoCheck = image.Checks?.FirstOrDefault(c => c.IsAuto);
-        PreviewProcessed = autoCheck == null || !File.Exists(autoCheck.FilePath) ? PreviewProcessed : autoCheck.FilePath;
+        PreviewProcessed = !autoCheck.IsSuccess || !File.Exists(autoCheck.FilePath) ? PreviewProcessed : autoCheck.FilePath;
         showAdditionalButtons = false;
         showReasons = false;
         fileUploaded = false;
