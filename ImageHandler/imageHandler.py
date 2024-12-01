@@ -26,7 +26,7 @@ class ImageHandler:
         image_rotated = self.image_rotator.rotate(image_without_transparency)
         face_square = self.face_square_recognizer.get_face_rectangle(image_rotated)
         if (not self.blur_checker.check_for_blur(image_rotated, face_square)):
-            raise ValueError(4)
+            raise ValueError(1)
         image_face_cut = self.image_cutter.cut_in_proportions(image_rotated, face_square)
         image_3x4 = self.image_cutter.cut_3x4(image_face_cut)
         compressed_image = self.image_cutter.cut_quality(image_3x4)
