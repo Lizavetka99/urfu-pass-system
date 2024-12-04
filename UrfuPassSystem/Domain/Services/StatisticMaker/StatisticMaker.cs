@@ -29,7 +29,7 @@ public class StatisticMaker : IStatisticMaker
             .Include(i => i.Checks!.OrderBy(c => c.CheckTime))
             .AddCheckTimeFilters(from, to)
             .AsEnumerable()
-            .GroupBy(i => i.Checks!.Last(c => !c.IsDeleted).ResultCode)
+            .GroupBy(i => i.Checks!.Where(c => !c.IsDeleted).MaxBy(c => c.CheckTime)!.ResultCode)
             .Where(i => i.Key != Enums.ImageCheckResultCode.Success)
             .Select(g => new BadImageStatistic(g.Key, g.Count()))
             .ToArray();

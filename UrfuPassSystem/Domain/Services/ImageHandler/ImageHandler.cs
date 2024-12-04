@@ -14,7 +14,7 @@ public class ImageHandler(IImageStorage imageStorage, IImageProcessor processor,
 
     private readonly string _processedImagesExtension = "jpg";
 
-    public async Task<Image> SaveAndCheckImage(ApplicationDbContext dbContext, string rawFilePath)
+    public async Task<Image> SaveAndCheckImage(ApplicationDbContext dbContext, string rawFilePath, bool mustSaveChanges)
     {
         var originalName = Path.GetFileName(rawFilePath);
         var originalPath = _imageStorage.CreateImageFile(Path.GetExtension(rawFilePath));
@@ -43,7 +43,8 @@ public class ImageHandler(IImageStorage imageStorage, IImageProcessor processor,
         };
         dbContext.Images.Add(image);
         dbContext.ImageChecks.Add(check);
-        await dbContext.SaveChangesAsync();
+        if (mustSaveChanges)
+            await dbContext.SaveChangesAsync();
         _logger.LogDebug("Image '{path}' added and checked with code {code}.", rawFilePath, resultCode);
         return image;
     }

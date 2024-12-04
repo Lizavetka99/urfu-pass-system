@@ -1,4 +1,6 @@
-﻿using System.IO.Compression;
+﻿using SharpCompress.Archives;
+using SharpCompress.Archives.Rar;
+using System.IO.Compression;
 
 namespace UrfuPassSystem.Infrastructure.ArchiveHandler;
 
@@ -6,11 +8,19 @@ public class ArchiveHandler : IArchiveHandler
 {
     public Task ExtractArchive(string archivePath, string destinationPath)
     {
-        // TODO: add .rar support
-        if (Path.GetExtension(archivePath) != ".zip")
-            throw new NotSupportedException("Only .zip archive supported.");
-        ZipFile.ExtractToDirectory(archivePath, destinationPath);
-        return Task.CompletedTask;
+        if (Path.GetExtension(archivePath) == ".zip")
+        {
+            ZipFile.ExtractToDirectory(archivePath, destinationPath);
+            return Task.CompletedTask;
+        }
+        else if (Path.GetExtension(archivePath) == ".rar")
+        {
+            using var archive = RarArchive.Open(archivePath);
+            archive.ExtractToDirectory(destinationPath);
+            return Task.CompletedTask;
+        }
+        else
+            throw new NotSupportedException("Only .zip and .rar archive supported.");
     }
 
     public Task FolderToZip(string folderPath, string archivePath)

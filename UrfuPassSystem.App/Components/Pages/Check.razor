@@ -1,19 +1,17 @@
-﻿
-@using UrfuPassSystem.Domain.Entities
+﻿@using UrfuPassSystem.Domain.Entities
 @using UrfuPassSystem.Domain.Enums
 @using UrfuPassSystem.Domain.Services
 @using Microsoft.EntityFrameworkCore
-@inject IImageStorage ImageStorage
 @using UrfuPassSystem.Infrastructure.ImageStorage
 
 @page "/check"
 @rendermode InteractiveServer
+@inject IImageStorage ImageStorage
+@inject NavigationManager NavigationManager
 @inject ApplicationDbContext Database
 
 <PageTitle>Проверка фотографий</PageTitle>
 
-
- 
 @if (image == null)
 {
     <p><em>Все фотографии проверены.</em></p>
@@ -32,7 +30,7 @@ else
                     <a class="btn-download" href="@PreviewProcessed" download>
                         <i class="bi bi-download"></i>
                     </a>
-                    <img src="@PreviewProcessed"  alt="Фото не прошло автоматическую проверку. Причина: @Reasons[(int)image.Checks?.First().ResultCode!]"/>
+                    <img src="@PreviewProcessed"  alt="Фото не прошло автоматическую проверку. Причина: @CheckTitle(image.Checks?.LastOrDefault()?.ResultCode)"/>
                     @if (PreviewProcessed != null)
                         {<button type="button" class="btn-success" @onclick="Success">Подтвердить</button>}
                 </div>
@@ -44,7 +42,7 @@ else
                         <i class="bi bi-download"></i>
                     </a>
                     <img src="@PreviewRaw" alt=""/>
-                    <button type="button" class="btn-danger" @onclick="ShowAdditionalOptions">Фото не подходит</button>
+                    <button type="button" class="btn-danger" @onclick="() => showAdditionalButtons = !showAdditionalButtons">Фото не подходит</button>
 
                     @if (showAdditionalButtons)
                     {
@@ -54,19 +52,19 @@ else
                             @if (fileUploaded)
                                 {<button type="button" class="btn btn-secondary" @onclick="SaveImage">Обработать</button>}
                             <p>Или</p>
-                            <button type="button" class="btn btn-secondary" @onclick="ChooseReason">Выбрать причину</button>
+                            <button type="button" class="btn btn-secondary" @onclick="() => showReasons = !showReasons">Выбрать причину</button>
                             @if (showReasons)
                             {
                                 <div class="reasons-buttons">
-                                    <button type="button" class="btn btn-secondary" @onclick="(e) => OnReasonSelected(e, Reasons[1])">@Reasons[1]</button>
-                                    <button type="button" class="btn btn-secondary" @onclick="(e) => OnReasonSelected(e, Reasons[2])">@Reasons[2]</button>
-                                    <button type="button" class="btn btn-secondary" @onclick="(e) => OnReasonSelected(e, Reasons[3])">@Reasons[3]</button>
-                                    <button type="button" class="btn btn-secondary" @onclick="(e) => OnReasonSelected(e, Reasons[4])">@Reasons[4]</button>
-                                    <button type="button" class="btn btn-secondary" @onclick="(e) => OnReasonSelected(e, Reasons[5])">@Reasons[5]</button>
-                                    <button type="button" class="btn btn-secondary" @onclick="(e) => OnReasonSelected(e, Reasons[6])">@Reasons[6]</button>
-                                    <button type="button" class="btn btn-secondary" @onclick="(e) => OnReasonSelected(e, Reasons[7])">@Reasons[7]</button>
-                                    <button type="button" class="btn btn-secondary" @onclick="(e) => OnReasonSelected(e, Reasons[8])">@Reasons[8]</button>
-                                    <button type="button" class="btn btn-secondary" @onclick="(e) => OnReasonSelected(e, Reasons[9])">@Reasons[9]</button>
+                                    <button type="button" class="btn btn-secondary" @onclick="(e) => NotSuccess(e, (ImageCheckResultCode)1)">@CheckTitle((ImageCheckResultCode)1)</button>
+                                    <button type="button" class="btn btn-secondary" @onclick="(e) => NotSuccess(e, (ImageCheckResultCode)2)">@CheckTitle((ImageCheckResultCode)2)</button>
+                                    <button type="button" class="btn btn-secondary" @onclick="(e) => NotSuccess(e, (ImageCheckResultCode)3)">@CheckTitle((ImageCheckResultCode)3)</button>
+                                    <button type="button" class="btn btn-secondary" @onclick="(e) => NotSuccess(e, (ImageCheckResultCode)4)">@CheckTitle((ImageCheckResultCode)4)</button>
+                                    <button type="button" class="btn btn-secondary" @onclick="(e) => NotSuccess(e, (ImageCheckResultCode)5)">@CheckTitle((ImageCheckResultCode)5)</button>
+                                    <button type="button" class="btn btn-secondary" @onclick="(e) => NotSuccess(e, (ImageCheckResultCode)6)">@CheckTitle((ImageCheckResultCode)6)</button>
+                                    <button type="button" class="btn btn-secondary" @onclick="(e) => NotSuccess(e, (ImageCheckResultCode)7)">@CheckTitle((ImageCheckResultCode)7)</button>
+                                    <button type="button" class="btn btn-secondary" @onclick="(e) => NotSuccess(e, (ImageCheckResultCode)8)">@CheckTitle((ImageCheckResultCode)8)</button>
+                                    <button type="button" class="btn btn-secondary" @onclick="(e) => NotSuccess(e, (ImageCheckResultCode)100)">@CheckTitle((ImageCheckResultCode)100)</button>
                                 </div>
                             }
                         </div>
@@ -84,37 +82,16 @@ else
     private Image? image;
     private string? PreviewRaw { get; set; }
     private string? PreviewProcessed { get; set; }
-    public string? Reason { get; set; }
     private bool showAdditionalButtons;
     private bool showReasons;
-    private IBrowserFile changedFile { get; set; }
+    private IBrowserFile? changedFile { get; set; }
     private bool fileUploaded { get; set; }
 
-    private readonly Dictionary<int, string> Reasons = new()
-    {
-        {-1, "Непредвиденная ошибка"},
-        {0, "Успешная проверка"},
-        {1, "Плохое качество изображения"},
-        {2, "Нет лица"},
-        {3, "Несколько лиц"},
-        {4, "Плохо обрезано"},
-        {5, "Не подходящий фон"},
-        {6, "Посторонние объекты на фото"},
-        {7, "Не подходящий внешний вид"},
-        {8, "Неправильное положение лица на фото"},
-        {9, "Другая причина"},
-    };
-
-    private void ShowAdditionalOptions()
-    {
-        showAdditionalButtons = !showAdditionalButtons;
-    }
-    
     private async Task SaveImage()
     {
         var newImage = ImageStorage.CreateImageFile("jpg");
         await using var destinationStream = new FileStream(newImage, FileMode.Create);
-        await changedFile.OpenReadStream().CopyToAsync(destinationStream);
+        await changedFile!.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024).CopyToAsync(destinationStream);
         PreviewProcessed = newImage;
         StateHasChanged();
         
@@ -126,18 +103,7 @@ else
         fileUploaded = true;
         return Task.CompletedTask;
     }
-
-    private void ChooseReason()
-    {
-        showReasons = !showReasons;
-    }
     
-    private async void OnReasonSelected(MouseEventArgs e, string reason)
-    {
-        if (image != null) Reason = reason;
-        await NotSuccess(e);
-    }
-
     protected override async Task OnInitializedAsync()
     {
         await Update();
@@ -146,18 +112,18 @@ else
     private async Task Success(MouseEventArgs e)
     {
         NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
-        var check = await CreateCheck(image!, true);
+        var check = await CreateCheck(image!, ImageCheckResultCode.Success);
         await Update();
     }
 
-    private async Task NotSuccess(MouseEventArgs e)
+    private async Task NotSuccess(MouseEventArgs e, ImageCheckResultCode reason)
     {
         NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
-        var check = await CreateCheck(image!, false);
+        var check = await CreateCheck(image!, reason);
         await Update();
     }
 
-    private async Task<ImageCheck> CreateCheck(Image image, bool isSuccess)
+    private async Task<ImageCheck> CreateCheck(Image image, ImageCheckResultCode result)
     {
         var check = new ImageCheck
         {
@@ -166,7 +132,7 @@ else
             IsAuto = false,
             IsEdited = false,
             FilePath = image.FilePath,
-            ResultCode = isSuccess ? ImageCheckResultCode.Success : ImageCheckResultCode.UnexpectedError
+            ResultCode = result
         };
         await Database.ImageChecks.AddAsync(check);
         await Database.SaveChangesAsync();
@@ -176,25 +142,38 @@ else
     private async Task Update()
     {
         image = await Database.Images
-            .Include(i => i.Checks)
-            .Where(i => !i.Checks!.Any(c => !c.IsAuto && !c.IsDeleted))
+            .Include(i => i.Checks!.OrderBy(c => c.CheckTime))
+            .Where(i => !i.Checks!.Any(c => !c.IsDeleted && !c.IsAuto))
             .FirstOrDefaultAsync();
         if (image == null)
             return;
 
         PreviewRaw = image.FilePath;
-        var autoCheck = image.Checks?.FirstOrDefault(c => c.IsAuto);
-        PreviewProcessed = !autoCheck.IsSuccess || !File.Exists(autoCheck.FilePath) ? PreviewProcessed : autoCheck.FilePath;
+        var autoCheck = image.Checks!.LastOrDefault(c => !c.IsDeleted && c.IsAuto);
+        PreviewProcessed = autoCheck is not null && autoCheck.IsSuccess && File.Exists(autoCheck.FilePath) ? autoCheck.FilePath : null;
         showAdditionalButtons = false;
         showReasons = false;
         fileUploaded = false;
     }
 
-    [Inject]
-    NavigationManager NavigationManager { get; set; }
-
     private void NavigateToList()
     {
         NavigationManager.NavigateTo("list");
     }
+
+    private string CheckTitle(ImageCheckResultCode? code) => code switch
+    {
+        ImageCheckResultCode.UnexpectedError => "Неожиданная ошибка",
+        ImageCheckResultCode.Success => "Одобрено",
+        ImageCheckResultCode.BadQuality => "Плохое качество",
+        ImageCheckResultCode.NoFace => "Лицо не найдено",
+        ImageCheckResultCode.MoreThanOneFace => "Найдено несколько лиц",
+        ImageCheckResultCode.BadCrop => "Плохо обрезано",
+        ImageCheckResultCode.BadBackground => "Неподходящий фон",
+        ImageCheckResultCode.ForeignObjects => "Посторонние объекты",
+        ImageCheckResultCode.BadAppearance => "Неподходящий внешний вид",
+        ImageCheckResultCode.BadFace => "Неправильное положение лица на фото",
+        ImageCheckResultCode.UnexpectedReason => "Другая причина",
+        _ => "Неизвестная причина"
+    };
 }

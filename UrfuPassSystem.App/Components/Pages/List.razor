@@ -234,7 +234,7 @@ else
         _downloadInProgress = true;
         try
         {
-            var tempFolder = ImageStorage.CreateTempFolger();
+            var tempFolder = ImageStorage.CreateTempFolder(TimeSpan.FromHours(2));
             var imagesPath = Path.Combine(tempFolder.Path, "images");
             Directory.CreateDirectory(imagesPath);
             foreach (var (image, last, _, _) in images!.Where(i => _selected.Contains(i.image) ^ _selectInverted))

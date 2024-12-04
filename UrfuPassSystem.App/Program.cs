@@ -37,7 +37,9 @@ builder.Services.Configure<ImageProcessorOptions>(builder.Configuration.GetSecti
 builder.Services.AddSingleton<IImageProcessor, ImageProcessor>();
 
 builder.Services.Configure<ImageStorageOptions>(builder.Configuration.GetSection("ImageStorage"));
-builder.Services.AddSingleton<IImageStorage, ImageStorage>();
+builder.Services.AddSingleton<ImageStorage>();
+builder.Services.AddSingleton<IImageStorage>(provider => provider.GetRequiredService<ImageStorage>());
+builder.Services.AddHostedService(provider => provider.GetRequiredService<ImageStorage>());
 
 builder.Services.AddSingleton<IStatisticMaker, StatisticMaker>();
 builder.Services.AddScoped<IImageHandler, ImageHandler>();

@@ -16,10 +16,11 @@
 <h1>Добавить архив/фото</h1>
 
 <div style="margin-bottom: 20px; display: flex;">
-    <div>Выберите файл:</div>
-    <InputFile OnChange="FileUploaded" />
+    <div>Выберите файлы:</div>
+    <InputFile OnChange="FileUploaded" multiple />
 </div>
 
+<!--
 <h2>Выбранный файл:</h2>
 <div>
     <img height="300" src="@Preview" />
@@ -27,11 +28,41 @@
     <div>Размер: @FileSize.ToString("n0") (байт)</div>
     <div>Тип: @FileType</div>
 </div>
+-->
 
-<button type="button" class="btn btn-primary" @onclick="StartProcess">Обработать</button>
+@if (preview is not null)
+{
+    <img height="300" src="@preview" />
+}
+@foreach (var file in fileUploadProgresses)
+{
+    <div>
+        @file.FileName
+        <progress value="@file.UploadedBytes" max="@file.Size"></progress>
+        @file.UploadedPercentage.ToString("F1")%
+        (@FormatBytes(file.UploadedBytes) / @FormatBytes(file.Size))
+    </div>
+}
 
-<div style="color: red;">@ErrorMessage</div>
+<button type="button" class="btn btn-primary" @onclick="StartProcess" disabled="@(loadingsInProgress > 0 || fileUploadProgresses.Count == 0 || processingInProgress)">Обработать</button>
 
+@if (processingInProgress || processingFinished)
+{
+    @if (processingInProgress)
+    {
+        <div>Обработка файлов...</div>
+    }
+    @if (processingFinished)
+    {
+        <div>Обработка завершена.</div>
+    }
+    <div>Обработано: @processedCount</div>
+    <div>Пропущено: @skippedCount</div>
+}
+
+<div style="color: red;">@errorMessage</div>
+
+<!--
 <script lang="js">
     window.previewImage = (inputElem, imgElem) => {
         const url = URL.createObjectURL(inputElem.files[0]);
@@ -39,120 +70,219 @@
         imgElem.src = url;
     }
 </script>
-
+-->
 @code {
-    public string FileName { get; set; } = "";
-    public long FileSize { get; set; }
-    public string FileType { get; set; } = "";
-    public string? Preview { get; set; }
-    public string ErrorMessage { get; set; } = "";
+    const int MAX_FILES_COUNT = 100;
+    const long MAX_FILE_SIZE = 10L * 1024 * 1024 * 1024; // 10 GB
+    const long BUFFER_SIZE = 16384;
+    const int WORKERS_COUNT = 4;
+    private static readonly HashSet<string> _allowedExtensions = [".jpg", ".jpeg", ".png", ".jfif", ".heic", ".zip", ".rar"];
+    private static readonly HashSet<string> _archiveExtensions = [".zip", ".rar"];
+    private static readonly HashSet<string> _imageExtensions = [".jpg", ".jpeg", ".png", ".jfif", ".heic"];
+     
+    List<FileUploadProgress> fileUploadProgresses = [];
+    HashSet<string> fileNames = [];
+    ITempFolder? tempFolder;
+    string? tempFolderMainSubFolder;
+    string? preview;
+    int loadingsInProgress = 0;
+    bool processingInProgress = false;
+    int processedCount = 0;
+    int skippedCount = 0;
+    bool processingFinished = false;
 
-    public ITempFolger? TempFolger { get; set; }
-    public string? FilePath{ get; set; }
-
-    const int MAX_FILESIZE = 100 * 1024 * 1024; // 100 MB
+    string errorMessage = "";
 
     public async Task FileUploaded(InputFileChangeEventArgs e)
     {
-        if (TempFolger != null)
+        loadingsInProgress++;
+        try
         {
-            TempFolger.Dispose();
-            TempFolger = null;
-            FilePath = null;
+            if (fileUploadProgresses.Count + e.FileCount > MAX_FILES_COUNT)
+            {
+                errorMessage = "Выбрано слишком много файлов.";
+                return;
+            }
+            var files = e.GetMultipleFiles(MAX_FILES_COUNT);
+            var startIndex = fileUploadProgresses.Count;
+
+            foreach (var file in files)
+            {
+                var fileExtension = Path.GetExtension(file.Name).ToLower();
+                if (!_allowedExtensions.Contains(fileExtension))
+                {
+                    errorMessage = $"{file.Name}: Недопустимый тип файла. Разрешены только {string.Join(' ', _allowedExtensions)}.";
+                    return;
+                }
+                if (file.Size > MAX_FILE_SIZE)
+                {
+                    errorMessage = $"{file.Name}: Слишком большой файл. Максимальный размер файла 10 GB.";
+                    return;
+                }
+                if (fileNames.Contains(file.Name))
+                {
+                    errorMessage = $"{file.Name}: Файл с таким названием уже загружен.";
+                    return;
+                }
+                var progress = new FileUploadProgress(file.Name, file.Size, file.ContentType);
+                fileUploadProgresses.Add(progress);
+                fileNames.Add(file.Name);
+            }
+
+            if (tempFolder is not null && tempFolder.Disposed)
+            {
+                fileUploadProgresses.Clear();
+                fileNames.Clear();
+                tempFolder = null;
+                tempFolderMainSubFolder = null;
+                preview = null;
+            }
+
+            tempFolder ??= ImageStorage.CreateTempFolder(TimeSpan.FromHours(2));
+            tempFolderMainSubFolder ??= tempFolder.CreateEmplySubFolder();
+            errorMessage = "";
+
+            await using var timer = new Timer(_ => InvokeAsync(() => StateHasChanged()));
+            timer.Change(TimeSpan.FromMilliseconds(1000), TimeSpan.FromMilliseconds(1000));
+
+            var buffer = new byte[BUFFER_SIZE];
+            foreach (var file in files)
+            {
+                await using var sourceStream = file.OpenReadStream(MAX_FILE_SIZE);
+                await using var destinationStream = new FileStream(Path.Combine(tempFolderMainSubFolder, file.Name), FileMode.CreateNew);
+                while (await sourceStream.ReadAsync(buffer) is int length && length > 0)
+                {
+                    await destinationStream.WriteAsync(buffer, 0, length);
+                    fileUploadProgresses[startIndex].UploadedBytes += length;
+                }
+                startIndex++;
+            }
+            if (fileUploadProgresses.Count == 1 && fileUploadProgresses[0].ContentType.StartsWith("image"))
+                preview = Path.Combine(tempFolderMainSubFolder, fileUploadProgresses[0].FileName);
+            else
+                preview = null;
+            StateHasChanged();
         }
-
-        var file = e.File;
-        if (file is null)
-            return;
-
-        FileSize = file.Size;
-        FileType = file.ContentType;
-        FileName = file.Name;
-
-        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".jfif", ".heic" };
-        var archiveExtensions = new[] { ".zip", ".rar" };
-        var fileExtension = Path.GetExtension(FileName).ToLower();
-
-        if (!allowedExtensions.Contains(fileExtension) && !archiveExtensions.Contains(fileExtension))
+        finally
         {
-            ErrorMessage = "Недопустимый тип файла. Разрешены только .jpg, .jpeg, .png, .jfif, .heic, .zip, .rar.";
-            Preview = string.Empty;
-            return;
+            loadingsInProgress--;
         }
-
-        ErrorMessage = "";
-
-        TempFolger = ImageStorage.CreateTempFolger();
-        FilePath = Path.Combine(TempFolger.Path, FileName);
-
-        await using var destinationStream = new FileStream(FilePath, FileMode.Create);
-        await file.OpenReadStream(MAX_FILESIZE).CopyToAsync(destinationStream);
-
-        if (FileType.StartsWith("image"))
-            Preview = FilePath;
-        else
-            Preview = null;
     }
 
     private async Task StartProcess(MouseEventArgs e)
     {
-        if (TempFolger == null)
+        if (loadingsInProgress > 0 || fileUploadProgresses.Count == 0 || processingInProgress)
+            return;
+
+        if (tempFolder is null || tempFolder.Disposed)
         {
-            ErrorMessage = "Файл не выбран";
+            fileUploadProgresses.Clear();
+            fileNames.Clear();
+            tempFolder = null;
+            tempFolderMainSubFolder = null;
+            preview = null;
+            errorMessage = "Превышено время ожидания, файлы не сохранены. Попробуйте еще раз.";
             return;
         }
+        processingFinished = false;
+        skippedCount = 0;
+        processedCount = 0;
+        processingInProgress = true;
+        await using var timer = new Timer(_ => InvokeAsync(() => StateHasChanged()));
+        timer.Change(TimeSpan.FromMilliseconds(1000), TimeSpan.FromMilliseconds(1000));
         try
         {
-            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".jfif", ".heic" };
-
-            if (FileType.Contains("zip") || FileType.Contains("rar"))
+            var tasks = new List<Task>(WORKERS_COUNT);
+            var archiveTasks = new List<Task>();
+            var archiveFolders = new Dictionary<Task, string>();
+            var folderQueue = new Queue<string>([tempFolderMainSubFolder!]);
+            while (folderQueue.Count > 0)
             {
-                var randomFileName = Path.GetRandomFileName();
-                var path = Path.GetFullPath(Path.Combine(TempFolger.Path, randomFileName));
-                await ArchiveHandler.ExtractArchive(FilePath!, path);
-
-                var files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
-                var availableFiles = new List<string>();
+                var folder = folderQueue.Dequeue();
+                var files = Directory.GetFiles(folder, "*", SearchOption.AllDirectories);
                 foreach (var file in files)
                 {
                     var fileExtension = Path.GetExtension(file).ToLower();
-                    if (!allowedExtensions.Contains(fileExtension))
+                    if (_archiveExtensions.Contains(fileExtension))
                     {
-                        ErrorMessage = $"Архив содержит недопустимый файл: {Path.GetFileName(file)}";
+                        var folderPath = tempFolder.CreateEmplySubFolder();
+                        var task = ArchiveHandler.ExtractArchive(file, folderPath);
+                        if (task.IsCompleted)
+                        {
+                            await task;
+                            folderQueue.Enqueue(folderPath);
+                        }
+                        else
+                        {
+                            tasks.Add(task);
+                            archiveTasks.Add(task);
+                            archiveFolders.Add(task, folderPath);
+                        }
                     }
+                    else if (_imageExtensions.Contains(fileExtension))
+                        tasks.Add(ImageHandler.SaveAndCheckImage(DbContext, file, false));
                     else
-                        availableFiles.Add(file);
+                    {
+                        errorMessage = $"Недопустимый файл пропущен: {Path.GetFileName(file)}.";
+                        skippedCount++;
+                        continue;
+                    }
+                    if (tasks.Count >= WORKERS_COUNT)
+                    {
+                        var completed = await Task.WhenAny(tasks);
+                        tasks.Remove(completed);
+                        if (archiveTasks.Remove(completed))
+                        {
+                            folderQueue.Enqueue(archiveFolders[completed]);
+                            archiveFolders.Remove(completed);
+                        }
+                        else
+                            processedCount++;
+                    }
                 }
-
-                foreach (var file in availableFiles)
-                    await SaveImage(file);
-            }
-            else
-            {
-                var fileExtension = Path.GetExtension(FilePath!).ToLower();
-                if (!allowedExtensions.Contains(fileExtension))
+                if (folderQueue.Count == 0 && archiveTasks.Count > 0)
                 {
-                    ErrorMessage = "Недопустимый тип файла.";
-                    return;
+                    var completed = await Task.WhenAny(archiveTasks);
+                    tasks.Remove(completed);
+                    archiveTasks.Remove(completed);
+                    folderQueue.Enqueue(archiveFolders[completed]);
+                    archiveFolders.Remove(completed);
                 }
-                await SaveImage(FilePath!);
             }
-            Preview = null;
-            FileName = "";
-            FileSize = 0;
-            FileType = "";
-            ErrorMessage = "";
+            await Task.WhenAll(tasks);
+            processedCount += tasks.Count;
+
+            await DbContext.SaveChangesAsync();
+            processingFinished = true;
         }
         finally
         {
-            TempFolger.Dispose();
-            TempFolger = null;
-            FilePath = null;
+            fileUploadProgresses.Clear();
+            fileNames.Clear();
+            tempFolder.Dispose();
+            tempFolder = null;
+            tempFolderMainSubFolder = null;
+            preview = null;
+            processingInProgress = false;
         }
     }
 
-    private async Task SaveImage(string imagePath)
+    private static readonly string[] _suffixes = ["B", "KB", "MB", "GB", "TB"];
+    private static string FormatBytes(long bytes)
     {
-        await ImageHandler.SaveAndCheckImage(DbContext, imagePath);
+        var index = 0;
+        var size = (double)bytes;
+        while (size >= 1024 && index < _suffixes.Length - 1)
+        {
+            size /= 1024;
+            index++;
+        }
+        return $"{size:F2} {_suffixes[index]}";
+    }
+
+    record FileUploadProgress(string FileName, long Size, string ContentType)
+    {
+        public long UploadedBytes { get; set; }
+        public double UploadedPercentage => (double)UploadedBytes / (double)Size * 100d;
     }
 }

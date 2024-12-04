@@ -54,20 +54,23 @@ public class ImageProcessor : IImageProcessor
         }
         await process.WaitForExitAsync();
 
+        if (File.Exists(destinationPath)) // Если питон создал обработанный файл, обработка считается успешной.
+            return ImageProcessorResultCode.Success;
+
         var error = process.StandardError.ReadToEnd();
-        if (!string.IsNullOrWhiteSpace(error))
+        if (!string.IsNullOrWhiteSpace(error)) // Любой вывод в stderr считается ошибкой.
         {
             _logger.LogError("Python processor error: '{error}'", error);
             return ImageProcessorResultCode.UnexpectedError;
         }
 
         var output = process.StandardOutput.ReadToEnd();
-        if (string.IsNullOrWhiteSpace(output))
+        if (string.IsNullOrWhiteSpace(output)) // Если питон не вернул код, считается, что обработка прошла успешно.
         {
             _logger.LogWarning("Python processor didn't return code, consider it success.");
             return ImageProcessorResultCode.Success;
         }
-        if (!int.TryParse(output, out var code)
+        if (!int.TryParse(output, out var code) // Если питон вернул некорректный код, считается, что произошла неожиданная ошибка.
             || !Enum.IsDefined((ImageProcessorResultCode)code))
         {
             _logger.LogError("Python processor unexpected output: '{output}'", output);
