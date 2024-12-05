@@ -21,10 +21,10 @@ class ImageHandler:
     def edit_image(self,  image : numpy.ndarray) -> numpy.ndarray:
         if not self.quality_checker.check_for_min_quality(image):
             raise ValueError(1)
-
         image_without_transparency = self.transparency_remover.remove_transparancy(image)
-        image_rotated = self.image_rotator.rotate(image_without_transparency)
-        face_square = self.face_square_recognizer.get_face_rectangle(image_rotated)
+        #image_rotated = self.image_rotator.rotate(image_without_transparency)
+        image_rotated = image_without_transparency
+        face_square = self.face_square_recognizer.get_face_rectangle(image_without_transparency)
         if (not self.blur_checker.check_for_blur(image_rotated, face_square)):
             raise ValueError(1)
         image_face_cut = self.image_cutter.cut_in_proportions(image_rotated, face_square)
