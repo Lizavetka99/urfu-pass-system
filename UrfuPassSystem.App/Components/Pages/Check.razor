@@ -27,7 +27,7 @@ else
                 <!-- Обработанное фото с кнопкой -->
                 <div class="photo-container">
                     <p>Обработанное фото</p>
-                    <a class="btn-download" href="@PreviewProcessed" download>
+                    <a class="btn-download" href="@PreviewProcessed" download="@OriginalImageFileNameWithExtension(PreviewProcessed!)">
                         <i class="bi bi-download"></i>
                     </a>
                     <img src="@PreviewProcessed"  alt="Фото не прошло автоматическую проверку. Причина: @CheckTitle(image.Checks?.LastOrDefault()?.ResultCode)"/>
@@ -38,7 +38,7 @@ else
                 <!-- Изначальное фото с кнопкой -->
                 <div class="photo-container">
                     <p>Изначальное фото</p>
-                    <a class="btn-download" href="@PreviewRaw" download>
+                    <a class="btn-download" href="@PreviewRaw" download="@OriginalImageFileNameWithExtension(PreviewRaw!)">
                         <i class="bi bi-download"></i>
                     </a>
                     <img src="@PreviewRaw" alt=""/>
@@ -94,16 +94,16 @@ else
         await changedFile!.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024).CopyToAsync(destinationStream);
         PreviewProcessed = newImage;
         StateHasChanged();
-        
+
     }
-    
+
     public Task FileUploaded(InputFileChangeEventArgs e)
     {
         changedFile = e.File;
         fileUploaded = true;
         return Task.CompletedTask;
     }
-    
+
     protected override async Task OnInitializedAsync()
     {
         await Update();
@@ -131,7 +131,7 @@ else
             CheckTime = DateTime.UtcNow,
             IsAuto = false,
             IsEdited = false,
-            FilePath = image.FilePath,
+            FilePath = PreviewProcessed ?? image.FilePath,
             ResultCode = result
         };
         await Database.ImageChecks.AddAsync(check);
@@ -149,7 +149,7 @@ else
             return;
 
         PreviewRaw = image.FilePath;
-        var autoCheck = image.Checks!.LastOrDefault(c => !c.IsDeleted && c.IsAuto);
+        var autoCheck = image.Checks!.Where(c => !c.IsDeleted && c.IsAuto).MaxBy(c => c.CheckTime);
         PreviewProcessed = autoCheck is not null && autoCheck.IsSuccess && File.Exists(autoCheck.FilePath) ? autoCheck.FilePath : null;
         showAdditionalButtons = false;
         showReasons = false;
@@ -160,6 +160,12 @@ else
     {
         NavigationManager.NavigateTo("list");
     }
+
+    /// <summary>Возвращает оригинальное название image файла с расширением из pathWithExtension</summary>
+    /// <param name="pathWithExtension"></param>
+    /// <returns></returns>
+    private string OriginalImageFileNameWithExtension(string pathWithExtension)
+    => Path.ChangeExtension(image!.OriginalFileName, Path.GetExtension(pathWithExtension));
 
     private string CheckTitle(ImageCheckResultCode? code) => code switch
     {

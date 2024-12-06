@@ -198,7 +198,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var imagesRequest = Database.Images.Include(i => i.Checks!.Where(c => !c.IsDeleted).OrderByDescending(c => c.CheckTime))
+        var imagesRequest = Database.Images.Include(i => i.Checks!.Where(c => !c.IsDeleted))
             .AsEnumerable();
 
         if (MinCheckTime.HasValue)
@@ -223,7 +223,9 @@ else
             imagesRequest = imagesRequest.Where(i => !i.Checks!.Any(c => !c.IsAuto) || i.Checks!.First(c => !c.IsAuto).IsSuccess);
 
         images = (imagesRequest)
-            .Select(i => (i, i.Checks?.FirstOrDefault(), i.Checks?.FirstOrDefault(c => c.IsAuto), i.Checks?.FirstOrDefault(c => !c.IsAuto)))
+            .Select(i => (i, i.Checks?.MaxBy(c => c.CheckTime),
+                i.Checks?.Where(c => c.IsAuto).MaxBy(c => c.CheckTime),
+                i.Checks?.Where(c => !c.IsAuto).MaxBy(c => c.CheckTime)))
             .ToArray();
     }
 
@@ -241,22 +243,14 @@ else
             {
                 var sourcePath = last?.FilePath ?? image.FilePath;
                 var extension = Path.GetExtension(sourcePath);
-                var filename = image.StudentCardId ?? image.OriginalFileName;
+                var filename = image.OriginalFileName;//image.StudentCardId ?? image.OriginalFileName;
                 var filenameWithoutExtension = Path.GetFileNameWithoutExtension(filename);
                 var destinationPathWithoutExtension = Path.Combine(imagesPath, filenameWithoutExtension);
-                var destinationPath = Path.ChangeExtension(destinationPathWithoutExtension, extension);
+                var destinationPath = destinationPathWithoutExtension + extension;
                 if (File.Exists(destinationPath))
-                {
                     for (var i = 0; i < 100; i++)
-                    {
-                        var nextPath = Path.ChangeExtension($"{destinationPathWithoutExtension} ({i})", extension);
-                        if (!File.Exists(nextPath))
-                        {
-                            destinationPath = nextPath;
+                        if (!File.Exists(destinationPath = $"{destinationPathWithoutExtension} ({i})" + extension))
                             break;
-                        }
-                    }
-                }
                 File.Copy(sourcePath, destinationPath);
             }
             var zipFilePath = Path.Combine(tempFolder.Path, "images.zip");
