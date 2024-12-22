@@ -16,9 +16,11 @@ class ImageHandler:
         self.face_square_recognizer = face_square_recogniser.FaceSquareRecognizer()
         self.messages = dict()
         self.max_threads = 8
+        self.photos_count = 0  # Метрика
 
 
     def edit_image(self,  image : numpy.ndarray) -> numpy.ndarray:
+        self.photos_count += 1  # Метрика
         if not self.quality_checker.check_for_min_quality(image):
             raise ValueError(1)
         image_without_transparency = self.transparency_remover.remove_transparancy(image)
